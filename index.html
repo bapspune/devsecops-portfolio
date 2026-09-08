@@ -131,8 +131,11 @@
       <div class="gate-tab-pane" id="paneUnlock">
         <form id="accessUnlockForm" onsubmit="handleAccessUnlock(event)">
           <div class="gate-form-group">
-            <label for="unlockInput">Approved Email ID or Access Passcode</label>
-            <input type="text" id="unlockInput" class="gate-input" placeholder="Enter approved email or passcode..." required autocomplete="off">
+            <label for="unlockInput">Approved Email ID or Security Passkey</label>
+            <div style="position: relative;">
+              <input type="password" id="unlockInput" class="gate-input" placeholder="Enter security passkey or approved email..." required autocomplete="off" style="padding-right: 2.8rem;">
+              <button type="button" onclick="togglePassVisibility()" id="togglePassBtn" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 0.2rem;" title="Show/Hide passkey">👁️</button>
+            </div>
           </div>
           <button type="submit" class="gate-btn" id="btnSubmitUnlock">
             <i data-lucide="key"></i>
@@ -140,7 +143,7 @@
           </button>
         </form>
         <div class="gate-help">
-          Recruiter / reviewer key: <strong>devsecops2026</strong> or your approved email ID.
+          Confidential enterprise materials. Access restricted to authorized email IDs or provided security passkeys.
         </div>
       </div>
     </div>

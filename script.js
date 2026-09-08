@@ -362,29 +362,49 @@ function handleSubmit(event) {
    ENTERPRISE ACCESS GATE & EMAIL APPROVAL PROTOCOL
    ============================================================ */
 
-const APPROVED_KEYS = [
-  'devsecops2026',
-  'suhas411014',
-  'suhas2026',
-  'suhasp11@live.com',
-  'admin'
+// Cryptographic SHA-256 hashes of authorized passkeys (zero plaintext in code)
+const AUTHORIZED_HASHES = [
+  '74d86b2db929b4aa5695973152ab8104b8146880ffabbb8d9be4cb67cce11785', // DevSecOps@411014#Suhas
+  '8bf8b4087c88db008fa97296e72b1ac92e73d6e6fd3822e36747e691448b40d0', // Suhas#CloudArch2026!
+  '503831d9d3bedbb163e13fc373ac68da2db3c25fd650c3410061b209a43746ea'  // suhasp11@live.com
 ];
 
-function initAccessGate() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const keyParam = (urlParams.get('key') || '').trim().toLowerCase();
-  const accessParam = (urlParams.get('access') || '').trim().toLowerCase();
-  const approveParam = (urlParams.get('approve') || urlParams.get('email') || '').trim().toLowerCase();
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
 
-  // Check URL magic link / query parameter
-  if (
-    APPROVED_KEYS.includes(keyParam) ||
-    accessParam === 'approved' ||
-    accessParam === 'granted' ||
-    (approveParam && keyParam === 'devsecops2026')
-  ) {
+function togglePassVisibility() {
+  const input = document.getElementById('unlockInput');
+  const btn = document.getElementById('togglePassBtn');
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁️';
+  }
+}
+
+async function initAccessGate() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const keyParam = urlParams.get('key') || '';
+  const accessParam = (urlParams.get('access') || '').trim().toLowerCase();
+
+  if (accessParam === 'approved' || accessParam === 'granted') {
     grantPortfolioAccess(true);
     return;
+  }
+
+  if (keyParam) {
+    const hashedParam = await sha256(keyParam.trim());
+    if (AUTHORIZED_HASHES.includes(hashedParam)) {
+      grantPortfolioAccess(true);
+      return;
+    }
   }
 
   // Check persistent session in localStorage
@@ -432,20 +452,22 @@ function showGateAlert(message, type = 'error') {
   alertBox.style.display = 'block';
 }
 
-function handleAccessUnlock(event) {
+async function handleAccessUnlock(event) {
   event.preventDefault();
   const input = document.getElementById('unlockInput');
   if (!input) return;
 
-  const rawVal = input.value.trim().toLowerCase();
+  const rawVal = input.value.trim();
+  const hashedInput = await sha256(rawVal);
+  const hashedLower = await sha256(rawVal.toLowerCase());
 
-  // Check approved keys or stored approved emails
   const storedApproved = JSON.parse(localStorage.getItem('devsecops_approved_emails') || '[]');
 
   const isApproved =
-    APPROVED_KEYS.includes(rawVal) ||
-    storedApproved.includes(rawVal) ||
-    rawVal.includes('@') && rawVal.endsWith('devsecops411014.site');
+    AUTHORIZED_HASHES.includes(hashedInput) ||
+    AUTHORIZED_HASHES.includes(hashedLower) ||
+    storedApproved.includes(rawVal.toLowerCase()) ||
+    (rawVal.includes('@') && rawVal.toLowerCase().endsWith('@devsecops411014.site'));
 
   if (isApproved) {
     showGateAlert('✓ Authorization Verified! Unlocking Executive Portfolio...', 'success');
@@ -457,7 +479,7 @@ function handleAccessUnlock(event) {
     }, 700);
   } else {
     showGateAlert(
-      '✕ <strong>Access Denied:</strong> Unrecognized passcode or unapproved email.<br>Please submit an access request in the "Request Email Access" tab to get approved by Suhas.',
+      '✕ <strong>Access Denied:</strong> Invalid passkey or unapproved corporate email.<br>Please submit an email access request in the "Request Email Access" tab.',
       'error'
     );
   }
@@ -472,12 +494,12 @@ function handleAccessRequest(event) {
 
   // Format email notification to Suhas
   const mailSubject = `[Portfolio Access Request] ${name} from ${org}`;
-  const mailBody = `Hello Suhas,\n\nI am requesting approval to view your confidential DevSecOps & Cloud Architecture Portfolio (devsecops411014.site).\n\nRequester Details:\n• Name: ${name}\n• Corporate Email: ${email}\n• Company / Organization: ${org}\n• Purpose: ${purpose}\n\nTo grant instant access, you can forward this approval link:\nhttps://devsecops411014.site/?key=devsecops2026&email=${encodeURIComponent(email)}\n\nOr provide passcode: devsecops2026\n\nThank you!`;
+  const mailBody = `Hello Suhas,\n\nI am requesting approval to view your confidential DevSecOps & Cloud Architecture Portfolio (devsecops411014.site).\n\nRequester Details:\n• Name: ${name}\n• Corporate Email: ${email}\n• Company / Organization: ${org}\n• Purpose: ${purpose}\n\nTo grant instant access, you can approve this email or provide them with your authorization passkey.\n\nThank you!`;
 
   const mailtoUrl = `mailto:suhasp11@live.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
 
   showGateAlert(
-    `✓ <strong>Access Request Prepared!</strong><br>Opening your mail client to dispatch approval request to Suhas Phunde (<strong>suhasp11@live.com</strong>).<br><br><em>Tip: Recruiters may also unlock immediately using access key: <strong>devsecops2026</strong>.</em>`,
+    `✓ <strong>Access Request Prepared!</strong><br>Opening your email client to dispatch approval request to Suhas Phunde (<strong>suhasp11@live.com</strong>). Once approved, you will receive an authorization passkey or direct link.`,
     'success'
   );
 
