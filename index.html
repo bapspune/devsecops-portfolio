@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suhas Phunde — Senior DevSecOps Engineer & Cloud Architect | devsecops411014.site</title>
+  <meta name="description" content="Portfolio of Suhas Phunde — Senior DevSecOps Engineer, Cloud Architect, and AI Platform Builder with 17+ years of experience across AWS, Kubernetes, Terraform, and Agentic AI. Visit devsecops411014.site.">
+  <meta name="keywords" content="DevSecOps, Cloud Architect, AWS, Kubernetes, Terraform, AI, Senior Engineer, Portfolio, Suhas Phunde, devsecops411014.site">
+  <meta name="author" content="Suhas Phunde">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://devsecops411014.site/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Suhas Phunde — Senior DevSecOps Engineer & Cloud Architect">
+  <meta property="og:description" content="17+ years engineering enterprise cloud infrastructure, DevSecOps pipelines, and Agentic AI platforms.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://devsecops411014.site/">
+  <meta property="og:image" content="https://devsecops411014.site/avatar.png">
+  <meta property="og:site_name" content="devsecops411014.site">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Suhas Phunde — Senior DevSecOps Engineer & Cloud Architect">
+  <meta name="twitter:description" content="17+ years engineering enterprise cloud infrastructure, DevSecOps pipelines, and Agentic AI platforms.">
+  <meta name="twitter:image" content="https://devsecops411014.site/avatar.png">
+
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Suhas Phunde",
+    "url": "https://devsecops411014.site",
+    "image": "https://devsecops411014.site/avatar.png",
+    "jobTitle": "Senior DevSecOps Engineer & Cloud Architect",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "IBM Corporation"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/in/suhas-devops"
+    ],
+    "email": "mailto:suhasp11@live.com",
+    "telephone": "+1-973-262-3445",
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "NJ",
+      "addressCountry": "US"
+    },
+    "knowsAbout": [
+      "DevSecOps",
+      "AWS Cloud Architecture",
+      "Kubernetes & EKS",
+      "Terraform IaC",
+      "Agentic AI Platforms",
+      "Zero-Trust Security",
+      "CI/CD Pipeline Automation",
+      "HIPAA / PIPEDA Compliance"
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="styles.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="portfolio-locked">
+
+  <!-- ===== Ambient Background ===== -->
+  <div class="ambient-orb ambient-orb--blue"></div>
+  <div class="ambient-orb ambient-orb--purple"></div>
+  <div class="ambient-orb ambient-orb--cyan"></div>
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- ===== Enterprise Access Gate / Confidentiality Portal ===== -->
+  <div class="access-gate" id="accessGate">
+    <div class="gate-card">
+      <div class="gate-header">
+        <div class="gate-icon-wrapper">
+          <span id="gateLockIcon">🔒</span>
+        </div>
+        <div class="gate-badge">
+          <span class="pulse"></span>
+          <span>Confidentiality Protected</span>
+        </div>
+        <h2 class="gate-title">Executive Portfolio Access</h2>
+        <p class="gate-subtitle">
+          Enterprise Cloud & DevSecOps Architecture portfolio of <strong>Suhas Phunde</strong>.
+          Access requires authorization or email approval.
+        </p>
+      </div>
+
+      <div class="gate-tabs">
+        <button class="gate-tab active" id="tabBtnRequest" onclick="switchGateTab('request')">Request Email Access</button>
+        <button class="gate-tab" id="tabBtnUnlock" onclick="switchGateTab('unlock')">Enter Approved Email / Key</button>
+      </div>
+
+      <div id="gateAlert" class="gate-alert"></div>
+
+      <!-- Tab 1: Request Access via Email -->
+      <div class="gate-tab-pane active" id="paneRequest">
+        <form id="accessRequestForm" onsubmit="handleAccessRequest(event)">
+          <div class="gate-form-group">
+            <label for="reqName">Your Full Name</label>
+            <input type="text" id="reqName" class="gate-input" placeholder="e.g. Alex Morgan" required>
+          </div>
+          <div class="gate-form-group">
+            <label for="reqEmail">Your Corporate / Work Email</label>
+            <input type="email" id="reqEmail" class="gate-input" placeholder="e.g. alex@company.com" required>
+          </div>
+          <div class="gate-form-group">
+            <label for="reqOrg">Organization / Agency</label>
+            <input type="text" id="reqOrg" class="gate-input" placeholder="e.g. AWS, T-Mobile, Tech Recruiter" required>
+          </div>
+          <div class="gate-form-group">
+            <label for="reqPurpose">Purpose of Access</label>
+            <input type="text" id="reqPurpose" class="gate-input" placeholder="e.g. Senior DevSecOps Role / Architecture Advisory" required>
+          </div>
+          <button type="submit" class="gate-btn" id="btnSubmitRequest">
+            <i data-lucide="mail"></i>
+            <span>Submit Access Request for Email Approval</span>
+          </button>
+        </form>
+        <div class="gate-help">
+          Access requests are routed directly to <strong>suhasp11@live.com</strong> for approval.
+        </div>
+      </div>
+
+      <!-- Tab 2: Enter Approved Email / Key -->
+      <div class="gate-tab-pane" id="paneUnlock">
+        <form id="accessUnlockForm" onsubmit="handleAccessUnlock(event)">
+          <div class="gate-form-group">
+            <label for="unlockInput">Approved Email ID or Access Passcode</label>
+            <input type="text" id="unlockInput" class="gate-input" placeholder="Enter approved email or passcode..." required autocomplete="off">
+          </div>
+          <button type="submit" class="gate-btn" id="btnSubmitUnlock">
+            <i data-lucide="key"></i>
+            <span>Verify & Unlock Portfolio</span>
+          </button>
+        </form>
+        <div class="gate-help">
+          Recruiter / reviewer key: <strong>devsecops2026</strong> or your approved email ID.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Navigation ===== -->
+  <nav class="nav" id="navbar">
+    <div class="container nav__inner">
+      <a href="#" class="nav__logo">
+        <span class="logo-mark">SP</span>
+        <span class="logo-domain">devsecops411014.site</span>
+      </a>
+      <div class="nav__access-status" id="navAccessStatus">
+        <span class="status-dot"></span>
+        <span>Access Granted</span>
+        <button class="nav__relock-btn" onclick="relockPortfolio()" title="Lock portfolio again">Lock</button>
+      </div>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#speaking">Speaking</a></li>
+        <li><a href="#achievements">Achievements</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== Portfolio Main Content ===== -->
+  <div id="portfolio-main">
+
+  <!-- ===== Hero Section ===== -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero__content">
+        <div class="hero__badge">
+          <span class="dot"></span>
+          <span>devsecops411014.site</span>
+          <span class="badge-separator">·</span>
+          <span>17+ Years DevSecOps & Cloud</span>
+        </div>
+        <h1 class="hero__name">
+          Hi, I'm <span class="gradient-text">Suhas Phunde</span>
+        </h1>
+        <div class="hero__title">
+          <span id="typed-text"></span>
+          <span class="cursor"></span>
+        </div>
+        <p class="hero__summary">
+          Senior DevSecOps Engineer & Cloud Architect with <strong>17+ years</strong> of experience 
+          designing enterprise cloud infrastructure, Kubernetes platforms, CI/CD pipelines, 
+          and Agentic AI systems for Fortune 500 clients including <strong>T-Mobile</strong>, 
+          <strong>Mastercard</strong>, <strong>Barclays</strong>, and <strong>IBM</strong>.
+        </p>
+        <div class="hero__cta">
+          <a href="#contact" class="btn btn--primary">
+            <i data-lucide="send" class="btn__icon"></i>
+            Get in Touch
+          </a>
+          <a href="Suhas_Phunde_AI_DevSecOps_SME.pdf" class="btn btn--outline" target="_blank">
+            <i data-lucide="file-text" class="btn__icon"></i>
+            Download Resume (PDF)
+          </a>
+          <a href="https://www.linkedin.com/in/suhas-devops" target="_blank" rel="noopener noreferrer" class="btn btn--outline">
+            <i data-lucide="linkedin" class="btn__icon"></i>
+            LinkedIn
+          </a>
+        </div>
+
+        <div class="hero__tech">
+          <span class="hero__tech-label">Tech Ecosystem</span>
+          <div class="hero__tech-icons">
+            <span class="tech-icon" title="AWS Cloud Architecture">☁️</span>
+            <span class="tech-icon" title="Kubernetes & EKS">⎈</span>
+            <span class="tech-icon" title="Terraform Infrastructure as Code">🏗️</span>
+            <span class="tech-icon" title="Docker Containerization">🐳</span>
+            <span class="tech-icon" title="Python & Automation">🐍</span>
+            <span class="tech-icon" title="GitHub Actions CI/CD">⚙️</span>
+            <span class="tech-icon" title="Agentic AI & Bedrock">🤖</span>
+            <span class="tech-icon" title="Zero-Trust Security & Vault">🔒</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Stats ===== -->
+  <section class="stats section-padding" id="stats">
+    <div class="container">
+      <div class="stats__grid">
+        <div class="stat-card reveal">
+          <div class="stat-card__number" data-target="17" data-suffix="+">0</div>
+          <div class="stat-card__label">Years of Experience</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-card__number" data-target="300" data-suffix="+">0</div>
+          <div class="stat-card__label">AWS Resources / Env</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-card__number" data-target="50" data-suffix="+">0</div>
+          <div class="stat-card__label">Terraform Modules Authored</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-card__number" data-target="10">0</div>
+          <div class="stat-card__label">Industry Certifications</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== About ===== -->
+  <section class="about section-padding" id="about">
+    <div class="container">
+      <div class="about__grid">
+        <div class="about__image-wrapper reveal">
+          <div class="about__image">
+            <img src="avatar.png" alt="Suhas Phunde - Senior DevSecOps Engineer & Cloud Architect" id="profileImg">
+          </div>
+          <div class="about__image-decor"></div>
+        </div>
+        <div class="about__text reveal">
+          <span class="section-label">About Me</span>
+          <h2 class="section-title">Engineering Resilient<br>Cloud & AI Infrastructure</h2>
+          <p>
+            I'm a <strong>Senior DevSecOps Engineer and Cloud Architect</strong> with over 17 years of 
+            hands-on experience building and securing enterprise-grade cloud platforms. I specialize in 
+            <strong>AWS multi-account Landing Zones</strong>, <strong>Kubernetes at scale</strong>, 
+            <strong>modular Terraform IaC</strong>, and <strong>Agentic AI platform architecture</strong>.
+          </p>
+          <p>
+            Currently at <strong>IBM Corporation</strong>, I architect HIPAA/PIPEDA-compliant healthcare 
+            platforms spanning multiple AWS regions and accounts. I'm passionate about automating everything,
+            building zero-trust security architectures, and leveraging AI agents to accelerate engineering velocity.
+          </p>
+          <div class="about__highlights">
+            <div class="about__highlight-item">
+              <span class="icon">✓</span> AWS Certified Solutions Architect
+            </div>
+            <div class="about__highlight-item">
+              <span class="icon">✓</span> Certified Kubernetes (CKAD)
+            </div>
+            <div class="about__highlight-item">
+              <span class="icon">✓</span> HashiCorp Terraform Associate
+            </div>
+            <div class="about__highlight-item">
+              <span class="icon">✓</span> Agentic AI Platform Builder (LangGraph/MCP)
+            </div>
+            <div class="about__highlight-item">
+              <span class="icon">✓</span> Speaker at AWS Summit 2026
+            </div>
+            <div class="about__highlight-item">
+              <span class="icon">✓</span> Speaker at IBM Think 2025
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Skills ===== -->
+  <section class="skills section-padding" id="skills">
+    <div class="container">
+      <span class="section-label reveal">Technical Expertise</span>
+      <h2 class="section-title reveal">Core Competencies & Stack</h2>
+      <p class="section-subtitle reveal">
+        Deep, hands-on expertise across cloud infrastructure, security compliance, container orchestration, and AI agents.
+      </p>
+
+      <div class="skills__grid">
+        <!-- Cloud & Infrastructure -->
+        <div class="skill-category reveal">
+          <div class="skill-category__header">
+            <div class="skill-category__icon">☁️</div>
+            <h3 class="skill-category__title">Cloud & Infrastructure</h3>
+          </div>
+          <div class="skill-tags">
+            <span class="skill-tag">AWS (Expert)</span>
+            <span class="skill-tag">Azure</span>
+            <span class="skill-tag">VPC & Subnets</span>
+            <span class="skill-tag">Amazon EKS</span>
+            <span class="skill-tag">Aurora PostgreSQL</span>
+            <span class="skill-tag">S3 & DynamoDB</span>
+            <span class="skill-tag">IAM & OIDC</span>
+            <span class="skill-tag">Route 53</span>
+            <span class="skill-tag">CloudFront & WAF</span>
+            <span class="skill-tag">AWS KMS</span>
+            <span class="skill-tag">AWS Bedrock</span>
+            <span class="skill-tag">AWS EMR</span>
+          </div>
+        </div>
+
+        <!-- Containers & IaC -->
+        <div class="skill-category reveal">
+          <div class="skill-category__header">
+            <div class="skill-category__icon">⎈</div>
+            <h3 class="skill-category__title">Containers & IaC</h3>
+          </div>
+          <div class="skill-tags">
+            <span class="skill-tag">Kubernetes</span>
+            <span class="skill-tag">Terraform (50+ Modules)</span>
+            <span class="skill-tag">Docker</span>
+            <span class="skill-tag">Helm 3</span>
+            <span class="skill-tag">Karpenter v1.1.1+</span>
+            <span class="skill-tag">Red Hat OpenShift</span>
+            <span class="skill-tag">Istio Service Mesh</span>
+            <span class="skill-tag">VPC CNI & IRSA</span>
+            <span class="skill-tag">ClusterSecretStore (ESO)</span>
+            <span class="skill-tag">Network Policies</span>
+            <span class="skill-tag">Ansible</span>
+            <span class="skill-tag">Chef</span>
+          </div>
+        </div>
+
+        <!-- AI & ML -->
+        <div class="skill-category reveal">
+          <div class="skill-category__header">
+            <div class="skill-category__icon">🤖</div>
+            <h3 class="skill-category__title">Agentic AI & LLMs</h3>
+          </div>
+          <div class="skill-tags">
+            <span class="skill-tag">LangGraph State Machines</span>
+            <span class="skill-tag">LangChain</span>
+            <span class="skill-tag">CrewAI Multi-Agent</span>
+            <span class="skill-tag">Custom MCP Server</span>
+            <span class="skill-tag">AWS Bedrock Foundation Models</span>
+            <span class="skill-tag">RAG Architecture</span>
+            <span class="skill-tag">IBM Consulting Advantage (ICA)</span>
+            <span class="skill-tag">IBM Bob AI Platform</span>
+            <span class="skill-tag">Python AI Microservices</span>
+          </div>
+        </div>
+
+        <!-- CI/CD -->
+        <div class="skill-category reveal">
+          <div class="skill-category__header">
+            <div class="skill-category__icon">🔄</div>
+            <h3 class="skill-category__title">CI/CD & DevSecOps</h3>
+          </div>
+          <div class="skill-tags">
+            <span class="skill-tag">GitHub Actions (2,500+ Lines)</span>
+            <span class="skill-tag">GitLab CI/CD</span>
+            <span class="skill-tag">ARC Self-Hosted Runners</span>
+            <span class="skill-tag">GitHub OIDC (Zero Keys)</span>
+            <span class="skill-tag">Jenkins & Bamboo</span>
+            <span class="skill-tag">UrbanCode Deploy</span>
+            <span class="skill-tag">Blue-Green Deployments</span>
+            <span class="skill-tag">Rolling Zero-Downtime</span>
+            <span class="skill-tag">Maven & Ant</span>
+            <span class="skill-tag">Python & Bash Scripting</span>
+          </div>
+        </div>
+
+        <!-- Security -->
+        <div class="skill-category reveal">
+          <div class="skill-category__header">
+            <div class="skill-category__icon">🔒</div>
+            <h3 class="skill-category__title">Security & Compliance</h3>
+          </div>
+          <div class="skill-tags">
+            <span class="skill-tag">HIPAA (us-east-1)</span>
+            <span class="skill-tag">PIPEDA (ca-central-1)</span>
+            <span class="skill-tag">Zero-Trust Architecture</span>
+            <span class="skill-tag">HashiCorp Vault</span>
+            <span class="skill-tag">CyberArk SAFE</span>
+            <span class="skill-tag">Snyk Security Gates</span>
+            <span class="skill-tag">SonarQube</span>
+            <span class="skill-tag">SAST & DAST Scanning</span>
+            <span class="skill-tag">OWASP Top 10 WAF</span>
+            <span class="skill-tag">GaraSign Key-Pair Auth</span>
+          </div>
+        </div>
+
+        <!-- Monitoring -->
+        <div class="skill-category reveal">
+          <div class="skill-category__header">
+            <div class="skill-category__icon">📊</div>
+            <h3 class="skill-category__title">Observability & Data</h3>
+          </div>
+          <div class="skill-tags">
+            <span class="skill-tag">Splunk Dashboards & Alerts</span>
+            <span class="skill-tag">ELK Stack</span>
+            <span class="skill-tag">AppDynamics APM</span>
+            <span class="skill-tag">Snowflake Provisioning</span>
+            <span class="skill-tag">MySQL & PostgreSQL</span>
+            <span class="skill-tag">Apache Kafka</span>
+            <span class="skill-tag">Google Apigee</span>
+            <span class="skill-tag">JFrog Artifactory & Nexus</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Experience ===== -->
+  <section class="experience section-padding" id="experience">
+    <div class="container">
+      <span class="section-label reveal">Career Journey</span>
+      <h2 class="section-title reveal">Professional Experience</h2>
+      <p class="section-subtitle reveal">
+        17+ years of continuous engineering excellence across mission-critical enterprise systems.
+      </p>
+
+      <div class="timeline">
+        <!-- 1 — GNQ Insilico -->
+        <div class="timeline-item reveal">
+          <div class="timeline-item__dot"></div>
+          <div class="timeline-item__card">
+            <div class="timeline-item__header">
+              <h3 class="timeline-item__role">Application Consultant — DevOps Engineer</h3>
+              <span class="timeline-item__dates">Apr 2026 – Present</span>
+            </div>
+            <p class="timeline-item__company">
+              IBM Corporation — <span class="client">Client: GNQ Insilico Inc.</span> · New Jersey, United States
+            </p>
+            <button class="timeline-item__expand" onclick="toggleTimeline(this)">
+              View details <span class="arrow">▾</span>
+            </button>
+            <div class="timeline-item__details">
+              <ul>
+                <li><strong>AWS Architecture:</strong> Designed multi-account Landing Zone with 5 OUs across 7 accounts enforcing HIPAA (us-east-1) and PIPEDA (ca-central-1) compliance with zero cross-region data leakage; delivered 300+ resources per environment via Terraform.</li>
+                <li><strong>Terraform IaC:</strong> Authored 50+ modular components provisioning EKS, Aurora PostgreSQL (Serverless v2 & provisioned), KMS, IAM (OIDC), and Helm releases; engineered 4 stale-plan detection guards achieving first-attempt apply success.</li>
+                <li><strong>EKS / Kubernetes:</strong> Deployed EKS v1.34 with private-only API endpoints, AL2023 nodes, and Karpenter v1.1.1+ autoscaler; configured VPC CNI, CoreDNS, EBS/EFS CSI drivers, and AWS Load Balancer Controller via IRSA.</li>
+                <li><strong>Agentic AI Platform:</strong> Architected 3-microservice AI platform on EKS with LangGraph stateful 5-node state machine; leveraged IBM Consulting Advantage (ICA) and IBM Bob AI; built custom MCP server and integrated LangChain/CrewAI RAG with AWS Bedrock.</li>
+                <li><strong>GitHub Actions CI/CD:</strong> Designed 2,500+ line advanced-master-orchestrator with 10 pipeline stages, GitHub OIDC (zero static credentials); deployed ARC self-hosted runners on EKS; engineered 9-agent pre-push automation.</li>
+                <li><strong>Security & DR:</strong> Enforced zero cross-border access via IAM condition keys, SCPs, and separate KMS keys; deployed WAF with OWASP Top 10 rules; designed Active-Passive DR with Route 53 failover and Aurora Global Database (near-zero RPO, 15 min RTO).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 — OCC -->
+        <div class="timeline-item reveal">
+          <div class="timeline-item__dot"></div>
+          <div class="timeline-item__card">
+            <div class="timeline-item__header">
+              <h3 class="timeline-item__role">Application Consultant — DevOps Engineer</h3>
+              <span class="timeline-item__dates">Nov 2025 – Apr 2026</span>
+            </div>
+            <p class="timeline-item__company">
+              IBM Corporation — <span class="client">Client: Options Clearing Corp</span> · New Jersey, United States
+            </p>
+            <button class="timeline-item__expand" onclick="toggleTimeline(this)">
+              View details <span class="arrow">▾</span>
+            </button>
+            <div class="timeline-item__details">
+              <ul>
+                <li>Led enterprise Vault-to-Vault migration with an automation-driven approach, reducing incident risk from missing/outdated secrets by 95%.</li>
+                <li>Automated end-to-end secret migration via shell scripts utilizing Vault HTTP APIs with robust retries, logging, and concurrency.</li>
+                <li>Supported Snyk implementation across Jenkins and TeamCity build jobs, integrating automated security gates into Maven and Ant processes.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 — T-Mobile -->
+        <div class="timeline-item reveal">
+          <div class="timeline-item__dot"></div>
+          <div class="timeline-item__card">
+            <div class="timeline-item__header">
+              <h3 class="timeline-item__role">Lead DevOps Engineer</h3>
+              <span class="timeline-item__dates">Jan 2022 – Nov 2025</span>
+            </div>
+            <p class="timeline-item__company">
+              IBM Corporation — <span class="client">Client: T-Mobile US</span> · New Jersey, United States
+            </p>
+            <span class="timeline-item__kudos">⭐ RECEIVED: T-Mobile Client Appreciation for Outstanding Engineering Contributions (Nov 2025)</span>
+            <button class="timeline-item__expand" onclick="toggleTimeline(this)">
+              View details <span class="arrow">▾</span>
+            </button>
+            <div class="timeline-item__details">
+              <ul>
+                <li>Led DevSecOps for the T-Mobile DPTC platform — 50+ microservices across Azure Cloud and on-prem Kubernetes, integrated with Kafka, Snowflake, and Apigee.</li>
+                <li><strong>CI/CD:</strong> Built reusable GitLab CI/CD templates with YAML anchors/includes across Dev, QA, UAT, and Prod; implemented multi-stage pipelines with downstream triggers, approval gates, SAST/DAST scans, caching, and parallel execution.</li>
+                <li><strong>Zero-Downtime Migration:</strong> Delivered end-to-end Azure-to-Kubernetes migration of 50+ microservices with zero downtime using Helm charts, rolling updates, and blue-green patterns.</li>
+                <li><strong>Security:</strong> Implemented GaraSign key-pair authentication for Snowflake, Azure Vault integration, vulnerability detection gates, and CyberArk SAFE / HashiCorp Vault integrations.</li>
+                <li><strong>Automation & Observability:</strong> Integrated Karate and Selenium regression frameworks; built Splunk dashboards with automated alerts; configured AppDynamics transaction tracing.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 — Barclays -->
+        <div class="timeline-item reveal">
+          <div class="timeline-item__dot"></div>
+          <div class="timeline-item__card">
+            <div class="timeline-item__header">
+              <h3 class="timeline-item__role">Application Consultant — DevOps Engineer</h3>
+              <span class="timeline-item__dates">Oct 2020 – Oct 2021</span>
+            </div>
+            <p class="timeline-item__company">
+              IBM Global Services — <span class="client">Client: Barclays</span> · Pune, India
+            </p>
+            <button class="timeline-item__expand" onclick="toggleTimeline(this)">
+              View details <span class="arrow">▾</span>
+            </button>
+            <div class="timeline-item__details">
+              <ul>
+                <li>Designed Jenkins pipelines with Maven and multi-branch support; containerized Java applications on Red Hat OpenShift with BuildConfigs, DeploymentConfigs, and automated rollouts.</li>
+                <li>Provisioned AWS infrastructure (VPC, EC2, RDS, S3, IAM, EKS) using modular Terraform with S3 remote state and DynamoDB locking.</li>
+                <li>Integrated SonarQube quality gates and JFrog Artifactory binary repository management.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 — Bendigo -->
+        <div class="timeline-item reveal">
+          <div class="timeline-item__dot"></div>
+          <div class="timeline-item__card">
+            <div class="timeline-item__header">
+              <h3 class="timeline-item__role">Application Consultant — DevOps Engineer</h3>
+              <span class="timeline-item__dates">Jul 2020 – Oct 2020</span>
+            </div>
+            <p class="timeline-item__company">
+              IBM Global Services — <span class="client">Client: Bendigo and Adelaide Bank</span> · Pune, India
+            </p>
+            <button class="timeline-item__expand" onclick="toggleTimeline(this)">
+              View details <span class="arrow">▾</span>
+            </button>
+            <div class="timeline-item__details">
+              <ul>
+                <li>Led monolith-to-microservices migration leveraging GitLab AutoDevOps and Kubernetes.</li>
+                <li>Created PySpark data processing pipelines for AWS EMR; automated cloud provisioning via Terraform.</li>
+                <li>Implemented Istio service mesh for traffic routing, canary releases, and zero-downtime rollouts.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 — Xcel Energy -->
+        <div class="timeline-item reveal">
+          <div class="timeline-item__dot"></div>
+          <div class="timeline-item__card">
+            <div class="timeline-item__header">
+              <h3 class="timeline-item__role">Application Consultant — DevOps Engineer (Team Lead)</h3>
+              <span class="timeline-item__dates">Mar 2018 – Jun 2020</span>
+            </div>
+            <p class="timeline-item__company">
+              IBM Global Services — <span class="client">Client: Xcel Energy – US</span> · Pune, India
+            </p>
+            <button class="timeline-item__expand" onclick="toggleTimeline(this)">
+              View details <span class="arrow">▾</span>
+            </button>
+            <div class="timeline-item__details">
+              <ul>
+                <li>Led DevOps strategy for AMI and ADMS energy utility programs delivering ~5 critical releases/year.</li>
+                <li>Designed end-to-end pipelines using RTC, Jenkins, and UrbanCode Deploy for ESB/IIB Middleware.</li>
+                <li>Automated IIB EAR deployments on IBM WebSphere via Shell and Python, slashing deployment windows from hours to minutes.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7 — Mastercard -->
+        <div class="timeline-item reveal">
+          <div class="timeline-item__dot"></div>
+          <div class="timeline-item__card">
+            <div class="timeline-item__header">
+              <h3 class="timeline-item__role">Senior Internet Engineer — DevOps</h3>
+              <span class="timeline-item__dates">Jul 2015 – Apr 2017</span>
+            </div>
+            <p class="timeline-item__company">
+              Mastercard Technology Pvt Ltd · Pune, India
+            </p>
+            <button class="timeline-item__expand" onclick="toggleTimeline(this)">
+              View details <span class="arrow">▾</span>
+            </button>
+            <div class="timeline-item__details">
+              <ul>
+                <li>Authored Chef cookbooks for automated deployments at payment scale; led high-priority production incident resolution across F5 load balancers, JBoss, and WebSphere.</li>
+                <li>Maintained enterprise DevOps toolchain: Jenkins, Bamboo, Nexus, GitHub, SonarQube, Docker, Chef, and Ansible.</li>
+                <li>Automated multi-tier application deployments across hybrid cloud infrastructure using Ansible playbooks.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8 — Principal Global -->
+        <div class="timeline-item reveal">
+          <div class="timeline-item__dot"></div>
+          <div class="timeline-item__card">
+            <div class="timeline-item__header">
+              <h3 class="timeline-item__role">Associate Consultant — Java Developer</h3>
+              <span class="timeline-item__dates">Apr 2014 – May 2015</span>
+            </div>
+            <p class="timeline-item__company">
+              Principal Global Services Pvt. Ltd · Pune, India
+            </p>
+            <button class="timeline-item__expand" onclick="toggleTimeline(this)">
+              View details <span class="arrow">▾</span>
+            </button>
+            <div class="timeline-item__details">
+              <ul>
+                <li>Managed Jenkins pipelines and Git branching workflows for continuous integration.</li>
+                <li>Developed Java EE applications and packaged EAR/WAR artifacts with Apache Maven deploying to IBM WebSphere.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9 — SunGard / FIS -->
+        <div class="timeline-item reveal">
+          <div class="timeline-item__dot"></div>
+          <div class="timeline-item__card">
+            <div class="timeline-item__header">
+              <h3 class="timeline-item__role">Senior Build and Release Engineer</h3>
+              <span class="timeline-item__dates">Oct 2009 – Mar 2014</span>
+            </div>
+            <p class="timeline-item__company">
+              SunGard Global Solutions (FIS) · Pune, India
+            </p>
+            <button class="timeline-item__expand" onclick="toggleTimeline(this)">
+              View details <span class="arrow">▾</span>
+            </button>
+            <div class="timeline-item__details">
+              <ul>
+                <li>Engineered CI/CD using Atlassian Bamboo, cutting release turnaround times by 40%.</li>
+                <li>Administered WebSphere, JBoss, Tomcat, WebLogic, and IIS across DEV, QA, UAT, and PROD.</li>
+                <li>Automated Java EE and .NET build/deployment using Ant, Maven, and custom automation scripts.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10 — Convergys -->
+        <div class="timeline-item reveal">
+          <div class="timeline-item__dot"></div>
+          <div class="timeline-item__card">
+            <div class="timeline-item__header">
+              <h3 class="timeline-item__role">Technical Support Officer</h3>
+              <span class="timeline-item__dates">Jan 2009 – Apr 2009</span>
+            </div>
+            <p class="timeline-item__company">
+              Convergys India Services — <span class="client">Client: Microsoft</span> · Pune, India
+            </p>
+            <button class="timeline-item__expand" onclick="toggleTimeline(this)">
+              View details <span class="arrow">▾</span>
+            </button>
+            <div class="timeline-item__details">
+              <ul>
+                <li>Member of the first IE8 technical support team launched by Microsoft with Convergys.</li>
+                <li>Awarded KUDOS recognition for CSAT performance and problem resolution speed.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Certifications ===== -->
+  <section class="certifications section-padding" id="certifications">
+    <div class="container">
+      <span class="section-label reveal">Credentials</span>
+      <h2 class="section-title reveal">Professional Certifications</h2>
+      <p class="section-subtitle reveal">
+        Globally verified credentials across cloud architecture, Kubernetes, infrastructure-as-code, and AI.
+      </p>
+
+      <div class="certs__grid">
+        <div class="cert-card reveal">
+          <div class="cert-card__badge">🏆</div>
+          <div class="cert-card__name">AWS Solutions Architect – Associate</div>
+          <div class="cert-card__year">2024</div>
+        </div>
+        <div class="cert-card reveal">
+          <div class="cert-card__badge">🏗️</div>
+          <div class="cert-card__name">HashiCorp Terraform Associate</div>
+          <div class="cert-card__year">2024</div>
+        </div>
+        <div class="cert-card reveal">
+          <div class="cert-card__badge">⎈</div>
+          <div class="cert-card__name">CKAD – Certified Kubernetes Application Developer</div>
+          <div class="cert-card__year">2021</div>
+        </div>
+        <div class="cert-card reveal">
+          <div class="cert-card__badge">☁️</div>
+          <div class="cert-card__name">AWS Certified Cloud Practitioner</div>
+          <div class="cert-card__year">2021</div>
+        </div>
+        <div class="cert-card reveal">
+          <div class="cert-card__badge">🔷</div>
+          <div class="cert-card__name">Microsoft Azure Fundamentals AZ-900</div>
+          <div class="cert-card__year">2020</div>
+        </div>
+        <div class="cert-card reveal">
+          <div class="cert-card__badge">🐳</div>
+          <div class="cert-card__name">IBM Cloud Pak Containers</div>
+          <div class="cert-card__year">2020</div>
+        </div>
+        <div class="cert-card reveal">
+          <div class="cert-card__badge">🔧</div>
+          <div class="cert-card__name">IBM Garage Foundation</div>
+          <div class="cert-card__year">2020</div>
+        </div>
+        <div class="cert-card reveal">
+          <div class="cert-card__badge">🎯</div>
+          <div class="cert-card__name">IBM Cloud Essentials V3</div>
+          <div class="cert-card__year">2019</div>
+        </div>
+        <div class="cert-card reveal">
+          <div class="cert-card__badge">💡</div>
+          <div class="cert-card__name">Enterprise Design Thinking Practitioner</div>
+          <div class="cert-card__year">2018</div>
+        </div>
+        <div class="cert-card reveal">
+          <div class="cert-card__badge">🐍</div>
+          <div class="cert-card__name">Python for Data Science</div>
+          <div class="cert-card__year">2018</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Speaking & Awards ===== -->
+  <section class="speaking section-padding" id="speaking">
+    <div class="container">
+      <span class="section-label reveal">Recognition</span>
+      <h2 class="section-title reveal">Speaking & Honors</h2>
+      <p class="section-subtitle reveal">
+        Thought leadership, open source contributions, and engineering excellence awards.
+      </p>
+
+      <div class="speaking__grid">
+        <div class="speaking-card reveal">
+          <span class="speaking-card__type speaking-card__type--talk">Keynote & Session</span>
+          <h3 class="speaking-card__title">Speaker @ AWS Summit (2026)</h3>
+          <p class="speaking-card__desc">
+            <strong>"Architecting HIPAA-Compliant Agentic AI on EKS"</strong> — Presented patterns for orchestrating stateful LangGraph agents, private Bedrock endpoints, and multi-OU security boundaries on Kubernetes.
+          </p>
+        </div>
+        <div class="speaking-card reveal">
+          <span class="speaking-card__type speaking-card__type--talk">Keynote & Session</span>
+          <h3 class="speaking-card__title">Speaker @ IBM Think (2025)</h3>
+          <p class="speaking-card__desc">
+            <strong>"Empowering CI/CD with Agentic AI at Enterprise Scale"</strong> — Demonstrated how autonomous agents and Model Context Protocol (MCP) accelerate software delivery pipelines and quality assurance.
+          </p>
+        </div>
+        <div class="speaking-card reveal">
+          <span class="speaking-card__type speaking-card__type--oss">Open Source</span>
+          <h3 class="speaking-card__title">Open-Source Contributor: MCP Integrations</h3>
+          <p class="speaking-card__desc">
+            Built custom Model Context Protocol (MCP) servers and plugins for automated plan drift detection, Terraform security scanning, and Kubernetes cluster operations.
+          </p>
+        </div>
+        <div class="speaking-card reveal">
+          <span class="speaking-card__type speaking-card__type--award">IBM Honor</span>
+          <h3 class="speaking-card__title">IBM Excellence Award (2024)</h3>
+          <p class="speaking-card__desc">
+            Awarded for the flawless T-Mobile DPTC Azure-to-Kubernetes migration — orchestrating 50+ microservices with zero downtime and improved platform stability.
+          </p>
+        </div>
+        <div class="speaking-card reveal">
+          <span class="speaking-card__type speaking-card__type--award">Client Recognition</span>
+          <h3 class="speaking-card__title">T-Mobile Client KUDOS (2025)</h3>
+          <p class="speaking-card__desc">
+            Honored by client executive leadership for elevating security posture, secret management governance, and developer release speed.
+          </p>
+        </div>
+        <div class="speaking-card reveal">
+          <span class="speaking-card__type speaking-card__type--award">Industry Honor</span>
+          <h3 class="speaking-card__title">SunGard KODOS Award (2013)</h3>
+          <p class="speaking-card__desc">
+            Awarded for consistent on-time delivery excellence and release engineering leadership across mission-critical financial trading applications.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Key Achievements ===== -->
+  <section class="achievements section-padding" id="achievements">
+    <div class="container">
+      <span class="section-label reveal">Impact</span>
+      <h2 class="section-title reveal">Key Achievements</h2>
+      <p class="section-subtitle reveal">
+        Tangible business impact and technical milestones delivered across enterprise organizations.
+      </p>
+
+      <div class="achievements__grid">
+        <div class="achievement-card reveal">
+          <div class="achievement-card__icon">🏥</div>
+          <div>
+            <div class="achievement-card__title">BioAvatar Digital Twins (2026)</div>
+            <div class="achievement-card__desc">300+ AWS resources across 8 HIPAA/PIPEDA environments provisioned with first-attempt Terraform apply and zero cross-border leakage.</div>
+          </div>
+        </div>
+        <div class="achievement-card reveal">
+          <div class="achievement-card__icon">📱</div>
+          <div>
+            <div class="achievement-card__title">Azure-to-K8s Migration (T-Mobile)</div>
+            <div class="achievement-card__desc">50+ microservices migrated with zero downtime via Helm, rolling updates, and blue-green deployments.</div>
+          </div>
+        </div>
+        <div class="achievement-card reveal">
+          <div class="achievement-card__icon">🔐</div>
+          <div>
+            <div class="achievement-card__title">Automated Vault Migration (OCC)</div>
+            <div class="achievement-card__desc">Automated secret paths and policy migrations, reducing incident risks from missing/outdated credentials by 95%.</div>
+          </div>
+        </div>
+        <div class="achievement-card reveal">
+          <div class="achievement-card__icon">⚡</div>
+          <div>
+            <div class="achievement-card__title">Energy Grid DevSecOps (Xcel Energy)</div>
+            <div class="achievement-card__desc">~5 major releases per year across AMI and ADMS grid middleware, reducing deployment windows from hours to minutes.</div>
+          </div>
+        </div>
+        <div class="achievement-card reveal">
+          <div class="achievement-card__icon">💰</div>
+          <div>
+            <div class="achievement-card__title">Financial Platform CI/CD (FIS)</div>
+            <div class="achievement-card__desc">Reduced deployment cycles by 40% via Bamboo build automation across multi-tier banking solutions.</div>
+          </div>
+        </div>
+        <div class="achievement-card reveal">
+          <div class="achievement-card__icon">⭐</div>
+          <div>
+            <div class="achievement-card__title">Enterprise Client Commendation</div>
+            <div class="achievement-card__desc">Recognized multiple times across IBM and enterprise clients for security posture improvements and release velocity.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Education ===== -->
+  <section class="education section-padding" id="education">
+    <div class="container">
+      <span class="section-label reveal">Education</span>
+      <h2 class="section-title reveal">Academic Background</h2>
+
+      <div class="education__grid">
+        <div class="edu-card reveal">
+          <div class="edu-card__icon">🎓</div>
+          <div>
+            <div class="edu-card__degree">Bachelor of Computer Engineering</div>
+            <div class="edu-card__school">Savitribai Phule Pune University, India</div>
+            <div class="edu-card__year">2004 – 2008 · Focus on Data Structures & Algorithms</div>
+          </div>
+        </div>
+        <div class="edu-card reveal">
+          <div class="edu-card__icon">📜</div>
+          <div>
+            <div class="edu-card__degree">Diploma in Computer Engineering</div>
+            <div class="edu-card__school">Cusrow Wadia College of Engineering, Pune, India</div>
+            <div class="edu-card__year">2001 – 2004</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Contact ===== -->
+  <section class="contact section-padding" id="contact">
+    <div class="container">
+      <span class="section-label reveal">Get in Touch</span>
+      <h2 class="section-title reveal">Let's Connect</h2>
+      <p class="section-subtitle reveal">
+        Discussing cloud architecture, DevSecOps leadership, agentic AI pipelines, or technical advisory.
+      </p>
+
+      <div class="contact__grid">
+        <div class="reveal">
+          <div class="contact__info-card">
+            <div class="contact__info-icon">📧</div>
+            <div>
+              <div class="contact__info-label">Email</div>
+              <a href="mailto:suhasp11@live.com" class="contact__info-value">suhasp11@live.com</a>
+            </div>
+          </div>
+          <div class="contact__info-card">
+            <div class="contact__info-icon">📱</div>
+            <div>
+              <div class="contact__info-label">Phone</div>
+              <a href="tel:+19732623445" class="contact__info-value">+1 (973) 262-3445</a>
+            </div>
+          </div>
+          <div class="contact__info-card">
+            <div class="contact__info-icon">💼</div>
+            <div>
+              <div class="contact__info-label">LinkedIn</div>
+              <a href="https://www.linkedin.com/in/suhas-devops" target="_blank" rel="noopener noreferrer" class="contact__info-value">linkedin.com/in/suhas-devops</a>
+            </div>
+          </div>
+          <div class="contact__info-card">
+            <div class="contact__info-icon">🌐</div>
+            <div>
+              <div class="contact__info-label">Website Domain</div>
+              <a href="https://devsecops411014.site" target="_blank" rel="noopener noreferrer" class="contact__info-value">devsecops411014.site</a>
+            </div>
+          </div>
+          <div class="contact__info-card">
+            <div class="contact__info-icon">📍</div>
+            <div>
+              <div class="contact__info-label">Location</div>
+              <div class="contact__info-value">New Jersey, United States</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact__form reveal">
+          <form id="contactForm" onsubmit="handleSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" placeholder="Alex Morgan" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Your Email</label>
+                <input type="email" id="email" name="email" placeholder="alex@company.com" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="subject">Subject</label>
+              <input type="text" id="subject" name="subject" placeholder="DevSecOps & Cloud Architecture Discussion" required>
+            </div>
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" placeholder="Hi Suhas, I would like to connect regarding..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary" style="width: 100%; justify-content: center;">
+              <i data-lucide="send" class="btn__icon"></i>
+              Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__text">
+        Designed & Built by <strong>Suhas Phunde</strong> · <a href="https://devsecops411014.site" target="_blank" style="color: var(--accent-blue);">devsecops411014.site</a> · © 2026 All Rights Reserved
+      </p>
+    </div>
+  </footer>
+
+  </div><!-- end portfolio-main -->
+
+  <script src="script.js"></script>
+</body>
+</html>
