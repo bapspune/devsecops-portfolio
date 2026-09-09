@@ -82,24 +82,54 @@
         </div>
         <div class="gate-badge">
           <span class="pulse"></span>
-          <span>Confidentiality Protected</span>
+          <span>Confidentiality Protected · TLS 1.3 / SSL</span>
         </div>
         <h2 class="gate-title">Executive Portfolio Access</h2>
         <p class="gate-subtitle">
           Enterprise Cloud & DevSecOps Architecture portfolio of <strong>Suhas Phunde</strong>.
-          Access requires authorization or email approval.
+          Access requires mobile 2FA QR approval or authorization.
         </p>
       </div>
 
       <div class="gate-tabs">
-        <button class="gate-tab active" id="tabBtnRequest" onclick="switchGateTab('request')">Request Email Access</button>
-        <button class="gate-tab" id="tabBtnUnlock" onclick="switchGateTab('unlock')">Enter Approved Email / Key</button>
+        <button class="gate-tab active" id="tabBtnQr" onclick="switchGateTab('qr')">📱 QR Authenticator</button>
+        <button class="gate-tab" id="tabBtnRequest" onclick="switchGateTab('request')">✉️ Request Access</button>
+        <button class="gate-tab" id="tabBtnUnlock" onclick="switchGateTab('unlock')">🔑 Passkey / Key</button>
       </div>
 
       <div id="gateAlert" class="gate-alert"></div>
 
-      <!-- Tab 1: Request Access via Email -->
-      <div class="gate-tab-pane active" id="paneRequest">
+      <!-- Tab 1: QR Code 2FA Authenticator -->
+      <div class="gate-tab-pane active" id="paneQr">
+        <div class="qr-container">
+          <div class="qr-scanner-line"></div>
+          <div id="qrCodeDisplay" class="qr-box"></div>
+        </div>
+        <div class="qr-instructions">
+          <p>Scan with any mobile camera to authenticate or trigger instant approval for <strong>suhasp11@live.com</strong>.</p>
+          <div class="qr-email-tag">Authorized Approver: <span>suhasp11@live.com</span></div>
+        </div>
+
+        <div class="qr-action-row">
+          <a id="qrDirectAuthBtn" href="#" class="qr-open-btn" onclick="triggerEmailApproval(event)">
+            <i data-lucide="shield-check"></i>
+            <span>Approve via suhasp11@live.com (Mail / App)</span>
+          </a>
+        </div>
+
+        <div class="qr-otp-section">
+          <label for="otpInput">Or Enter 6-Digit Authenticator PIN / 2FA Code</label>
+          <form id="accessOtpForm" onsubmit="handleOtpUnlock(event)">
+            <div class="qr-otp-row">
+              <input type="text" id="otpInput" class="gate-input" placeholder="e.g. 411014" maxlength="12" autocomplete="one-time-code" required>
+              <button type="submit" class="gate-btn qr-otp-btn" id="btnSubmitOtp">Verify PIN</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab 2: Request Access via Email -->
+      <div class="gate-tab-pane" id="paneRequest">
         <form id="accessRequestForm" onsubmit="handleAccessRequest(event)">
           <div class="gate-form-group">
             <label for="reqName">Your Full Name</label>
@@ -127,7 +157,7 @@
         </div>
       </div>
 
-      <!-- Tab 2: Enter Approved Email / Key -->
+      <!-- Tab 3: Enter Approved Email / Key -->
       <div class="gate-tab-pane" id="paneUnlock">
         <form id="accessUnlockForm" onsubmit="handleAccessUnlock(event)">
           <div class="gate-form-group">
@@ -990,6 +1020,7 @@
 
   </div><!-- end portfolio-main -->
 
+  <script src="qrcode.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
