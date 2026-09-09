@@ -370,6 +370,7 @@ function handleSubmit(event) {
 // Cryptographic SHA-256 hashes of authorized passkeys & 2FA PINs (zero plaintext in code)
 const AUTHORIZED_HASHES = [
   '1ae515818494394dffebe5f412a0e3cfe9338fbfef2a5ad6fe73b7b1efed1e4b', // 70119928485050871! (Primary 2FA PIN)
+  '6010a674b4dcc1590cd29822cc3e1b91dcdb90b7d266f7f50037098651c0f2dd', // basant411014@gmail.com (Approver Email)
   '74d86b2db929b4aa5695973152ab8104b8146880ffabbb8d9be4cb67cce11785', // DevSecOps@411014#Suhas
   '8bf8b4087c88db008fa97296e72b1ac92e73d6e6fd3822e36747e691448b40d0', // Suhas#CloudArch2026!
   '503831d9d3bedbb163e13fc373ac68da2db3c25fd650c3410061b209a43746ea', // suhasp11@live.com
@@ -410,7 +411,7 @@ function renderQrAuthenticator() {
     ? window.location.origin
     : 'https://devsecops411014.site';
 
-  const authUrl = `${origin}/?auth=suhasp11@live.com&access=approved&key=70119928485050871!&pin=70119928485050871!`;
+  const authUrl = `${origin}/?auth=basant411014@gmail.com&access=approved&key=70119928485050871!&pin=70119928485050871!`;
 
   if (window.QRCode) {
     qrInstance = new QRCode(container, {
@@ -431,14 +432,14 @@ function triggerEmailApproval(event) {
     ? window.location.origin
     : 'https://devsecops411014.site';
 
-  const approvalLink = `${origin}/?auth=suhasp11@live.com&access=approved&key=70119928485050871!`;
+  const approvalLink = `${origin}/?auth=basant411014@gmail.com&access=approved&key=70119928485050871!`;
   const mailSubject = `[2FA Approval] Instant DevSecOps Portfolio Authorization`;
-  const mailBody = `Hello Suhas,\n\nPlease confirm access to your Executive DevSecOps & Cloud Architecture Portfolio (devsecops411014.site).\n\nDirect 1-Click Approval Link:\n${approvalLink}\n\nSecurity PIN / Key: 70119928485050871!\nPrimary Passkey: DevSecOps@411014#Suhas\nApprover: suhasp11@live.com`;
+  const mailBody = `Hello,\n\nPlease confirm access to the Executive DevSecOps & Cloud Architecture Portfolio (devsecops411014.site).\n\nDirect 1-Click Approval Link:\n${approvalLink}\n\nSecurity PIN / Key: 70119928485050871!\nPrimary Passkey: DevSecOps@411014#Suhas\nApprover: basant411014@gmail.com`;
 
-  const mailtoUrl = `mailto:suhasp11@live.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+  const mailtoUrl = `mailto:basant411014@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
 
   showGateAlert(
-    `✓ <strong>Launching 2FA Approval for suhasp11@live.com...</strong><br>Opening mail client to trigger verification. You can also enter PIN / Key <strong>70119928485050871!</strong> below for immediate access.`,
+    `✓ <strong>Launching 2FA Approval for basant411014@gmail.com...</strong><br>Opening mail client to trigger verification. You can also enter PIN / Key <strong>70119928485050871!</strong> below for immediate access.`,
     'success'
   );
 
@@ -461,7 +462,7 @@ async function handleOtpUnlock(event) {
     AUTHORIZED_HASHES.includes(hashedInput);
 
   if (isApproved) {
-    showGateAlert('✓ 2FA Code Verified! Authenticating session via suhasp11@live.com...', 'success');
+    showGateAlert('✓ 2FA Code Verified! Authenticating session via basant411014@gmail.com...', 'success');
     const lockIcon = document.getElementById('gateLockIcon');
     if (lockIcon) lockIcon.textContent = '🔓';
 
@@ -485,7 +486,7 @@ async function initAccessGate() {
   const pinParam = (urlParams.get('pin') || '').trim();
 
   // Instant URL approval checks
-  if (accessParam === 'approved' || accessParam === 'granted' || authParam === 'suhasp11@live.com' || otpParam === '70119928485050871!' || pinParam === '70119928485050871!' || otpParam === '411014') {
+  if (accessParam === 'approved' || accessParam === 'granted' || authParam === 'basant411014@gmail.com' || authParam === 'suhasp11@live.com' || otpParam === '70119928485050871!' || pinParam === '70119928485050871!' || otpParam === '411014') {
     grantPortfolioAccess(true);
     return;
   }
@@ -597,10 +598,10 @@ function handleAccessRequest(event) {
   const mailSubject = `[Portfolio Access Request] ${name} from ${org}`;
   const mailBody = `Hello Suhas,\n\nI am requesting approval to view your confidential DevSecOps & Cloud Architecture Portfolio (devsecops411014.site).\n\nRequester Details:\n• Name: ${name}\n• Corporate Email: ${email}\n• Company / Organization: ${org}\n• Purpose: ${purpose}\n\nTo grant instant access, you can approve this email or provide them with your authorization passkey.\n\nThank you!`;
 
-  const mailtoUrl = `mailto:suhasp11@live.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+  const mailtoUrl = `mailto:basant411014@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
 
   showGateAlert(
-    `✓ <strong>Access Request Prepared!</strong><br>Opening your email client to dispatch approval request to Suhas Phunde (<strong>suhasp11@live.com</strong>). Once approved, you will receive an authorization passkey or direct link.`,
+    `✓ <strong>Access Request Prepared!</strong><br>Opening your email client to dispatch approval request to Approver (<strong>basant411014@gmail.com</strong>). Once approved, you will receive an authorization passkey or direct link.`,
     'success'
   );
 
