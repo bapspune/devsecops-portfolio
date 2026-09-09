@@ -951,9 +951,19 @@
           </div>
           <div class="contact__info-card">
             <div class="contact__info-icon">📱</div>
-            <div>
-              <div class="contact__info-label">Phone</div>
+            <div style="flex: 1;">
+              <div class="contact__info-label">Direct Mobile & SMS</div>
               <a href="tel:+19732623445" class="contact__info-value">+1 (973) 262-3445</a>
+              <div class="contact__quick-actions">
+                <a href="sms:+19732623445?&body=Hi%20Suhas%2C%20I%20would%20like%20to%20connect%20regarding%20DevSecOps%20%26%20Cloud%20Architecture." class="btn-micro btn-sms" title="Send Direct SMS to +1 (973) 262-3445">
+                  <i data-lucide="smartphone"></i>
+                  <span>Text / SMS</span>
+                </a>
+                <a href="https://wa.me/19732623445?text=Hi%20Suhas%2C%20I%20would%20like%20to%20connect%20regarding%20DevSecOps%20%26%20Cloud%20Architecture." target="_blank" rel="noopener noreferrer" class="btn-micro btn-whatsapp" title="Chat on WhatsApp">
+                  <i data-lucide="message-circle"></i>
+                  <span>WhatsApp</span>
+                </a>
+              </div>
             </div>
           </div>
           <div class="contact__info-card">
@@ -980,6 +990,10 @@
         </div>
 
         <div class="contact__form reveal">
+          <div class="contact__dispatch-notice">
+            <i data-lucide="smartphone" class="contact__dispatch-icon"></i>
+            <span>Messages dispatch directly as an instant mobile text to <strong>+1 (973) 262-3445</strong> and email.</span>
+          </div>
           <form id="contactForm" onsubmit="handleSubmit(event)">
             <div class="form-row">
               <div class="form-group">
@@ -999,10 +1013,20 @@
               <label for="message">Message</label>
               <textarea id="message" name="message" placeholder="Hi Suhas, I would like to connect regarding..." required></textarea>
             </div>
-            <button type="submit" class="btn btn--primary" style="width: 100%; justify-content: center;">
-              <i data-lucide="send" class="btn__icon"></i>
-              Send Message
-            </button>
+            <div class="form-submit-row">
+              <button type="submit" name="channel" value="sms" class="btn btn--primary btn-channel-sms">
+                <i data-lucide="smartphone" class="btn__icon"></i>
+                <span>Send SMS to Mobile (+1 973-262-3445)</span>
+              </button>
+              <button type="submit" name="channel" value="whatsapp" class="btn btn-channel-wa">
+                <i data-lucide="message-circle" class="btn__icon"></i>
+                <span>WhatsApp</span>
+              </button>
+              <button type="submit" name="channel" value="email" class="btn btn-channel-mail">
+                <i data-lucide="mail" class="btn__icon"></i>
+                <span>Email</span>
+              </button>
+            </div>
           </form>
         </div>
       </div>

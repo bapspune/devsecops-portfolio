@@ -1248,6 +1248,124 @@ img { max-width: 100%; display: block; }
   gap: var(--space-md);
 }
 
+/* Contact Dispatch Notice & Multi-Channel Action */
+.contact__dispatch-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-bottom: var(--space-lg);
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.contact__dispatch-notice strong {
+  color: #38bdf8;
+  font-weight: 600;
+}
+.contact__dispatch-icon {
+  width: 18px;
+  height: 18px;
+  color: #38bdf8;
+  flex-shrink: 0;
+}
+
+.contact__quick-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.btn-micro {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+.btn-micro i, .btn-micro svg {
+  width: 13px;
+  height: 13px;
+}
+.btn-sms {
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+.btn-sms:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  transform: translateY(-1px);
+}
+.btn-whatsapp {
+  background: rgba(37, 211, 102, 0.12);
+  color: #25d366;
+  border: 1px solid rgba(37, 211, 102, 0.3);
+}
+.btn-whatsapp:hover {
+  background: rgba(37, 211, 102, 0.25);
+  border-color: #25d366;
+  transform: translateY(-1px);
+}
+
+.form-submit-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn-channel-sms {
+  flex: 2;
+  min-width: 240px;
+  justify-content: center;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+.btn-channel-sms:hover {
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+}
+.btn-channel-wa {
+  flex: 1;
+  min-width: 140px;
+  justify-content: center;
+  background: rgba(37, 211, 102, 0.12);
+  color: #25d366;
+  border: 1px solid rgba(37, 211, 102, 0.35);
+}
+.btn-channel-wa:hover {
+  background: rgba(37, 211, 102, 0.22);
+  border-color: #25d366;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+.btn-channel-mail {
+  flex: 1;
+  min-width: 120px;
+  justify-content: center;
+  background: rgba(168, 85, 247, 0.12);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+}
+.btn-channel-mail:hover {
+  background: rgba(168, 85, 247, 0.22);
+  border-color: #c084fc;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .btn-channel-sms, .btn-channel-wa, .btn-channel-mail {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+}
+
 /* ========================================
    FOOTER
    ======================================== */

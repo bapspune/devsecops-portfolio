@@ -337,30 +337,86 @@ function handleSubmit(event) {
   const form = event.target;
   const name = form.querySelector('#name').value.trim();
   const email = form.querySelector('#email').value.trim();
-  const subject = form.querySelector('#subject').value.trim() || 'Portfolio Inquiry';
+  const subject = form.querySelector('#subject').value.trim() || 'Cloud Architecture / DevSecOps Discussion';
   const message = form.querySelector('#message').value.trim();
 
-  // Create mailto fallback link
-  const mailtoBody = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
-  const mailtoUrl = `mailto:suhasp11@live.com?subject=${encodeURIComponent(subject)}&body=${mailtoBody}`;
+  // Detect which channel was triggered
+  const submitBtn = event.submitter || form.querySelector('.btn-channel-sms') || form.querySelector('button[type="submit"]');
+  const channel = (submitBtn && submitBtn.value) ? submitBtn.value : 'sms';
+  const originalHtml = submitBtn ? submitBtn.innerHTML : '';
 
-  // Notification / Success Feedback modal or inline toast
-  const submitBtn = form.querySelector('button[type="submit"]');
-  const originalHtml = submitBtn.innerHTML;
+  const mobileNumber = '+19732623445';
+  const formattedMobile = '+1 (973) 262-3445';
 
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = `<span>✓ Message Ready! Opening email...</span>`;
-  submitBtn.style.background = 'linear-gradient(135deg, #34d399 0%, #10b981 100%)';
+  if (channel === 'sms') {
+    // Direct SMS dispatch to Suhas's mobile phone
+    const smsBody = `Hi Suhas, I would like to connect regarding "${subject}". From: ${name} (${email}). Message: ${message}`;
+    const smsUrl = `sms:${mobileNumber}?&body=${encodeURIComponent(smsBody)}`;
 
-  setTimeout(() => {
-    window.location.href = mailtoUrl;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span>✓ Opening SMS for ${formattedMobile}...</span>`;
+      submitBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    }
+
     setTimeout(() => {
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = originalHtml;
-      submitBtn.style.background = '';
-      form.reset();
-    }, 2500);
-  }, 600);
+      window.location.href = smsUrl;
+      setTimeout(() => {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalHtml;
+          submitBtn.style.background = '';
+        }
+        form.reset();
+      }, 2500);
+    }, 400);
+
+  } else if (channel === 'whatsapp') {
+    // Direct WhatsApp dispatch
+    const waBody = `Hi Suhas,\n\n*From:* ${name} (${email})\n*Subject:* ${subject}\n\n*Message:*\n${message}`;
+    const waUrl = `https://wa.me/19732623445?text=${encodeURIComponent(waBody)}`;
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span>✓ Opening WhatsApp...</span>`;
+      submitBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    }
+
+    setTimeout(() => {
+      window.open(waUrl, '_blank');
+      setTimeout(() => {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalHtml;
+          submitBtn.style.background = '';
+        }
+        form.reset();
+      }, 1500);
+    }, 400);
+
+  } else {
+    // Direct Email dispatch
+    const mailtoBody = encodeURIComponent(`Hi Suhas,\n\nName: ${name}\nEmail: ${email}\nDirect Mobile Alert: ${formattedMobile}\n\nSubject: ${subject}\n\nMessage:\n${message}`);
+    const mailtoUrl = `mailto:suhasp11@live.com?subject=${encodeURIComponent(subject + ' - ' + name)}&body=${mailtoBody}`;
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span>✓ Opening Email Client...</span>`;
+      submitBtn.style.background = 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)';
+    }
+
+    setTimeout(() => {
+      window.location.href = mailtoUrl;
+      setTimeout(() => {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalHtml;
+          submitBtn.style.background = '';
+        }
+        form.reset();
+      }, 2500);
+    }, 400);
+  }
 }
 
 /* ============================================================
