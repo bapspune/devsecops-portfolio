@@ -439,7 +439,7 @@ function triggerEmailApproval(event) {
   const mailtoUrl = `mailto:basant411014@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
 
   showGateAlert(
-    `✓ <strong>Launching 2FA Approval for basant411014@gmail.com...</strong><br>Opening mail client to trigger verification. You can also enter PIN / Key <strong>70119928485050871!</strong> below for immediate access.`,
+    `✓ <strong>Launching 2FA Approval for basant411014@gmail.com...</strong><br>Opening your mail client to dispatch verification request to the administrator.`,
     'success'
   );
 
