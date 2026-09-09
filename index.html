@@ -118,10 +118,10 @@
         </div>
 
         <div class="qr-otp-section">
-          <label for="otpInput">Or Enter 6-Digit Authenticator PIN / 2FA Code</label>
+          <label for="otpInput">Or Enter Authenticator PIN / 2FA Security Key</label>
           <form id="accessOtpForm" onsubmit="handleOtpUnlock(event)">
             <div class="qr-otp-row">
-              <input type="text" id="otpInput" class="gate-input" placeholder="e.g. 411014" maxlength="12" autocomplete="one-time-code" required>
+              <input type="text" id="otpInput" class="gate-input" placeholder="Enter 2FA PIN / Key..." maxlength="64" autocomplete="off" required>
               <button type="submit" class="gate-btn qr-otp-btn" id="btnSubmitOtp">Verify PIN</button>
             </div>
           </form>
