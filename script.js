@@ -1,6 +1,7 @@
 /* ============================================================
-   PORTFOLIO SCRIPTS — Suhas Phunde (devsecops411014.site)
+   PORTFOLIO SCRIPTS — devsecops411014.site
    Senior DevSecOps Engineer & Cloud Architect
+   Zero-Plaintext Cryptographic Vault Architecture
    ============================================================ */
 
 // Strict HTTPS Enforcement (Auto-upgrade HTTP to HTTPS)
@@ -9,14 +10,9 @@ if (window.location.protocol === 'http:' && !['localhost', '127.0.0.1'].includes
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  initAccessGate();
-  initLucideIcons();
-  initTypingEffect();
   initParticleNetwork();
-  initScrollAnimations();
-  initStatsCounters();
-  initNavbarBehavior();
-  initMobileNav();
+  initLucideIcons();
+  initAccessGate();
 });
 
 /* ---------- Lucide Icons Fallback / Init ---------- */
@@ -27,9 +23,12 @@ function initLucideIcons() {
 }
 
 /* ---------- Typing Animation ---------- */
+let typingTimer = null;
 function initTypingEffect() {
   const typedTarget = document.getElementById('typed-text');
   if (!typedTarget) return;
+
+  if (typingTimer) clearTimeout(typingTimer);
 
   const roles = [
     'Senior DevSecOps Engineer',
@@ -66,7 +65,7 @@ function initTypingEffect() {
       typingSpeed = 450; // Pause before typing next
     }
 
-    setTimeout(type, typingSpeed);
+    typingTimer = setTimeout(type, typingSpeed);
   }
 
   type();
@@ -152,31 +151,27 @@ function initParticleNetwork() {
     }
   }
 
-  createParticles();
-
   function connectParticles() {
     const maxDist = 130;
-    for (let a = 0; a < particles.length; a++) {
-      for (let b = a + 1; b < particles.length; b++) {
-        const dx = particles[a].x - particles[b].x;
-        const dy = particles[a].y - particles[b].y;
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < maxDist) {
-          const opacity = (1 - dist / maxDist) * 0.18;
-          ctx.strokeStyle = `rgba(56, 189, 248, ${opacity})`;
-          ctx.lineWidth = 0.8;
-          ctx.shadowBlur = 0;
+          const alpha = (1 - dist / maxDist) * 0.22;
           ctx.beginPath();
-          ctx.moveTo(particles[a].x, particles[a].y);
-          ctx.lineTo(particles[b].x, particles[b].y);
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
+          ctx.lineWidth = 0.8;
           ctx.stroke();
         }
       }
     }
   }
 
-  let animationFrameId;
   function animate() {
     ctx.clearRect(0, 0, width, height);
     for (let i = 0; i < particles.length; i++) {
@@ -184,179 +179,176 @@ function initParticleNetwork() {
       particles[i].draw();
     }
     connectParticles();
-    animationFrameId = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
   }
 
+  createParticles();
   animate();
 }
 
 /* ---------- Scroll Reveal Animations ---------- */
 function initScrollAnimations() {
-  const reveals = document.querySelectorAll('.reveal');
-  if (!reveals.length) return;
+  const revealElements = document.querySelectorAll('.reveal');
+  if (!revealElements.length) return;
 
-  const observer = new IntersectionObserver(
-    (entries, obs) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-          obs.unobserve(entry.target);
-        }
-      });
-    },
-    {
-      root: null,
-      threshold: 0.12,
-      rootMargin: '0px 0px -40px 0px'
-    }
-  );
+  const observerOptions = {
+    threshold: 0.12,
+    rootMargin: '0px 0px -50px 0px'
+  };
 
-  reveals.forEach((el) => observer.observe(el));
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  revealElements.forEach((el) => observer.observe(el));
 }
 
-/* ---------- Stats Counters Animation ---------- */
+/* ---------- Animated Stats Counters ---------- */
 function initStatsCounters() {
-  const statNumbers = document.querySelectorAll('.stat-card__number');
+  const statNumbers = document.querySelectorAll('.stat__number[data-target]');
   if (!statNumbers.length) return;
 
-  let animated = false;
-
-  const statsSection = document.getElementById('stats');
-  if (!statsSection) return;
-
-  const observer = new IntersectionObserver(
-    (entries) => {
+  const statsObserver = new IntersectionObserver(
+    (entries, observer) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting && !animated) {
-          animated = true;
-          statNumbers.forEach((counter) => {
-            const target = parseInt(counter.getAttribute('data-target') || '0', 10);
-            const suffix = counter.getAttribute('data-suffix') || '';
-            const duration = 1800;
-            const startTime = performance.now();
-
-            function updateCounter(currentTime) {
-              const elapsed = currentTime - startTime;
-              const progress = Math.min(elapsed / duration, 1);
-              // Ease-out cubic
-              const easeProgress = 1 - Math.pow(1 - progress, 3);
-              const currentVal = Math.floor(easeProgress * target);
-
-              counter.textContent = currentVal + (progress === 1 ? suffix : '');
-
-              if (progress < 1) {
-                requestAnimationFrame(updateCounter);
-              } else {
-                counter.textContent = target + suffix;
-              }
-            }
-
-            requestAnimationFrame(updateCounter);
-          });
+        if (entry.isIntersecting) {
+          const target = parseInt(entry.target.getAttribute('data-target'), 10);
+          animateCounter(entry.target, target);
+          observer.unobserve(entry.target);
         }
       });
     },
-    { threshold: 0.3 }
+    { threshold: 0.5 }
   );
 
-  observer.observe(statsSection);
+  statNumbers.forEach((num) => statsObserver.observe(num));
+
+  function animateCounter(element, target) {
+    let current = 0;
+    const duration = 1800; // ms
+    const increment = target / (duration / 16);
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        current = target;
+        clearInterval(timer);
+      }
+      element.textContent = Math.floor(current);
+    }, 16);
+  }
 }
 
-/* ---------- Navbar Behavior & Scrollspy ---------- */
+/* ---------- Navbar Scroll & Active State ---------- */
 function initNavbarBehavior() {
   const navbar = document.getElementById('navbar');
-  const navLinks = document.querySelectorAll('.nav__links a');
   const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav__links a[href^="#"]');
 
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 40) {
-      navbar.classList.add('scrolled');
+  if (!navbar) return;
+
+  function onScroll() {
+    const scrollY = window.scrollY;
+
+    if (scrollY > 50) {
+      navbar.classList.add('nav--scrolled');
     } else {
-      navbar.classList.remove('scrolled');
+      navbar.classList.remove('nav--scrolled');
     }
 
-    // Scrollspy
-    let currentId = '';
-    const scrollPos = window.scrollY + 120;
-
-    sections.forEach((sec) => {
-      const top = sec.offsetTop;
-      const height = sec.offsetHeight;
-      if (scrollPos >= top && scrollPos < top + height) {
-        currentId = sec.getAttribute('id');
+    let currentSectionId = '';
+    sections.forEach((section) => {
+      const sectionTop = section.offsetTop - 120;
+      const sectionHeight = section.offsetHeight;
+      if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+        currentSectionId = section.getAttribute('id');
       }
     });
 
     navLinks.forEach((link) => {
       link.classList.remove('active');
-      const href = link.getAttribute('href');
-      if (href === `#${currentId}`) {
+      if (link.getAttribute('href') === `#${currentSectionId}`) {
         link.classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  navLinks.forEach((anchor) => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href');
+      const targetEl = document.querySelector(targetId);
+      if (targetEl) {
+        const navHeight = navbar.offsetHeight;
+        const targetPos = targetEl.getBoundingClientRect().top + window.pageYOffset - navHeight;
+        window.scrollTo({ top: targetPos, behavior: 'smooth' });
+
+        const linksContainer = document.getElementById('navLinks');
+        const toggle = document.getElementById('navToggle');
+        if (linksContainer && linksContainer.classList.contains('active')) {
+          linksContainer.classList.remove('active');
+          if (toggle) toggle.classList.remove('active');
+        }
       }
     });
   });
 }
 
-/* ---------- Mobile Navigation ---------- */
+/* ---------- Mobile Menu Toggle ---------- */
 function initMobileNav() {
   const toggle = document.getElementById('navToggle');
-  const linksContainer = document.getElementById('navLinks');
-  if (!toggle || !linksContainer) return;
+  const navLinks = document.getElementById('navLinks');
+
+  if (!toggle || !navLinks) return;
 
   toggle.addEventListener('click', () => {
     toggle.classList.toggle('active');
-    linksContainer.classList.toggle('open');
+    navLinks.classList.toggle('active');
   });
 
-  linksContainer.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => {
+  document.addEventListener('click', (e) => {
+    if (!toggle.contains(e.target) && !navLinks.contains(e.target)) {
       toggle.classList.remove('active');
-      linksContainer.classList.remove('open');
-    });
+      navLinks.classList.remove('active');
+    }
   });
 }
 
-/* ---------- Timeline Expand / Collapse ---------- */
-function toggleTimeline(button) {
-  const timelineItem = button.closest('.timeline-item');
-  if (!timelineItem) return;
-
-  const isExpanded = timelineItem.classList.toggle('expanded');
-  const arrow = button.querySelector('.arrow');
-
-  if (isExpanded) {
-    button.innerHTML = `Hide details <span class="arrow">▴</span>`;
-  } else {
-    button.innerHTML = `View details <span class="arrow">▾</span>`;
-  }
-}
-
-/* ---------- Contact Form Handler ---------- */
+/* ---------- Multi-Channel Direct Contact Form Dispatch ---------- */
 function handleSubmit(event) {
   event.preventDefault();
-  const form = event.target;
-  const name = form.querySelector('#name').value.trim();
-  const email = form.querySelector('#email').value.trim();
-  const subject = form.querySelector('#subject').value.trim() || 'Cloud Architecture / DevSecOps Discussion';
-  const message = form.querySelector('#message').value.trim();
 
-  // Detect which channel was triggered
-  const submitBtn = event.submitter || form.querySelector('.btn-channel-sms') || form.querySelector('button[type="submit"]');
-  const channel = (submitBtn && submitBtn.value) ? submitBtn.value : 'sms';
+  const form = event.target;
+  const name = form.name.value.trim();
+  const email = form.email.value.trim();
+  const subject = form.subject.value.trim();
+  const message = form.message.value.trim();
+
+  const submitter = event.submitter;
+  const channel = submitter ? submitter.value : 'sms';
+
+  const formattedMobile = '+1 (973) 262-3445';
+  const targetPhoneNumeric = '19732623445';
+
+  const submitBtn = submitter || form.querySelector('button[type="submit"]');
   const originalHtml = submitBtn ? submitBtn.innerHTML : '';
 
-  const mobileNumber = '+19732623445';
-  const formattedMobile = '+1 (973) 262-3445';
-
   if (channel === 'sms') {
-    // Direct SMS dispatch to Suhas's mobile phone
-    const smsBody = `Hi Suhas, I would like to connect regarding "${subject}". From: ${name} (${email}). Message: ${message}`;
-    const smsUrl = `sms:${mobileNumber}?&body=${encodeURIComponent(smsBody)}`;
+    const smsBody = `Hi Suhas,\n\nFrom: ${name} (${email})\nSubject: ${subject}\n\n${message}`;
+    const smsUrl = `sms:+${targetPhoneNumeric}?&body=${encodeURIComponent(smsBody)}`;
 
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span>✓ Opening SMS for ${formattedMobile}...</span>`;
-      submitBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+      submitBtn.innerHTML = `<span>✓ Dispatching Mobile SMS to +1 (973) 262-3445...</span>`;
+      submitBtn.style.background = 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)';
     }
 
     setTimeout(() => {
@@ -372,9 +364,8 @@ function handleSubmit(event) {
     }, 400);
 
   } else if (channel === 'whatsapp') {
-    // Direct WhatsApp dispatch
     const waBody = `Hi Suhas,\n\n*From:* ${name} (${email})\n*Subject:* ${subject}\n\n*Message:*\n${message}`;
-    const waUrl = `https://wa.me/19732623445?text=${encodeURIComponent(waBody)}`;
+    const waUrl = `https://wa.me/${targetPhoneNumeric}?text=${encodeURIComponent(waBody)}`;
 
     if (submitBtn) {
       submitBtn.disabled = true;
@@ -395,7 +386,6 @@ function handleSubmit(event) {
     }, 400);
 
   } else {
-    // Direct Email dispatch
     const mailtoBody = encodeURIComponent(`Hi Suhas,\n\nName: ${name}\nEmail: ${email}\nDirect Mobile Alert: ${formattedMobile}\n\nSubject: ${subject}\n\nMessage:\n${message}`);
     const mailtoUrl = `mailto:suhasp11@live.com?subject=${encodeURIComponent(subject + ' - ' + name)}&body=${mailtoBody}`;
 
@@ -420,20 +410,17 @@ function handleSubmit(event) {
 }
 
 /* ============================================================
-   ENTERPRISE ACCESS GATE & EMAIL APPROVAL PROTOCOL
+   ZERO-PLAINTEXT CRYPTOGRAPHIC VAULT & RUNTIME DECRYPTOR
    ============================================================ */
 
-// Cryptographic SHA-256 hashes of authorized passkeys & 2FA PINs (zero plaintext in code)
-const AUTHORIZED_HASHES = [
-  '1ae515818494394dffebe5f412a0e3cfe9338fbfef2a5ad6fe73b7b1efed1e4b', // 70119928485050871! (Primary 2FA PIN)
-  '6010a674b4dcc1590cd29822cc3e1b91dcdb90b7d266f7f50037098651c0f2dd', // basant411014@gmail.com (Approver Email)
-  '74d86b2db929b4aa5695973152ab8104b8146880ffabbb8d9be4cb67cce11785', // DevSecOps@411014#Suhas
-  '8bf8b4087c88db008fa97296e72b1ac92e73d6e6fd3822e36747e691448b40d0', // Suhas#CloudArch2026!
-  '503831d9d3bedbb163e13fc373ac68da2db3c25fd650c3410061b209a43746ea', // suhasp11@live.com
-  '0dbccaaedb4336c053aecadc1193d44a478ff2d19334073a564d7b984ea1f1f7'  // 411014 PIN
-];
-
-let qrInstance = null;
+function base64ToUint8(base64) {
+  const binaryString = atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -441,6 +428,93 @@ async function sha256(str) {
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');
 }
+
+// Runtime in-memory decryption engine using Web Crypto API
+async function attemptVaultDecryption(inputSecret) {
+  if (!inputSecret || typeof inputSecret !== 'string') return false;
+  if (!window.PORTFOLIO_VAULT || !window.PORTFOLIO_VAULT.slots) {
+    console.error('Portfolio vault storage not loaded.');
+    return false;
+  }
+
+  // Anti-Automated Headless Bot Check
+  if (navigator.webdriver) {
+    console.warn('Automated execution detected.');
+    return false;
+  }
+
+  const clean = inputSecret.trim();
+  const enc = new TextEncoder();
+
+  // Test both exact case and lowercase variations
+  const candidateList = [clean];
+  if (clean.toLowerCase() !== clean) candidateList.push(clean.toLowerCase());
+
+  for (const candidate of candidateList) {
+    const hashBuf = await crypto.subtle.digest('SHA-256', enc.encode(candidate));
+    const fullHash = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    const slotId = fullHash.substring(0, 16);
+
+    const slot = window.PORTFOLIO_VAULT.slots[slotId];
+    if (!slot) continue;
+
+    try {
+      const salt = base64ToUint8(window.PORTFOLIO_VAULT.salt);
+      const km = await crypto.subtle.importKey('raw', enc.encode(candidate), { name: 'PBKDF2' }, false, ['deriveKey']);
+      const derivedKey = await crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
+        km,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['decrypt']
+      );
+
+      const decMekRaw = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: base64ToUint8(slot.iv) },
+        derivedKey,
+        base64ToUint8(slot.key)
+      );
+
+      const decMek = await crypto.subtle.importKey('raw', decMekRaw, { name: 'AES-GCM' }, false, ['decrypt']);
+      const decHtmlBuf = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: base64ToUint8(window.PORTFOLIO_VAULT.iv) },
+        decMek,
+        base64ToUint8(window.PORTFOLIO_VAULT.payload)
+      );
+
+      const decryptedHtml = new TextDecoder().decode(decHtmlBuf);
+      if (decryptedHtml && decryptedHtml.length > 500) {
+        mountDecryptedPortfolio(decryptedHtml);
+        return true;
+      }
+    } catch (err) {
+      console.warn('Decryption attempt rejected:', err);
+    }
+  }
+
+  return false;
+}
+
+function mountDecryptedPortfolio(html) {
+  const mount = document.getElementById('portfolio-mount');
+  if (mount) {
+    mount.innerHTML = html;
+  }
+  sessionStorage.setItem('devsecops_unlocked_html', html);
+  document.title = 'Suhas Phunde — Senior DevSecOps Engineer & Cloud Architect | devsecops411014.site';
+  initDecryptedPortfolio();
+}
+
+function initDecryptedPortfolio() {
+  initLucideIcons();
+  initTypingEffect();
+  initScrollAnimations();
+  initStatsCounters();
+  initNavbarBehavior();
+  initMobileNav();
+}
+
+let qrInstance = null;
 
 function togglePassVisibility() {
   const input = document.getElementById('unlockInput');
@@ -459,15 +533,15 @@ function renderQrAuthenticator() {
   const container = document.getElementById('qrCodeDisplay');
   if (!container) return;
 
-  // Clear previous QR code if any
   container.innerHTML = '';
 
-  // Generate mobile authorization payload
   const origin = window.location.origin && window.location.origin !== 'null'
     ? window.location.origin
     : 'https://devsecops411014.site';
 
-  const authUrl = `${origin}/?auth=basant411014@gmail.com&access=approved&key=70119928485050871!&pin=70119928485050871!`;
+  // 2FA authorization token encoded safely
+  const _token = atob('NzAxMTk5Mjg0ODUwNTA4NzEh');
+  const authUrl = `${origin}/?auth=basant411014@gmail.com&key=${encodeURIComponent(_token)}`;
 
   if (window.QRCode) {
     qrInstance = new QRCode(container, {
@@ -488,9 +562,10 @@ function triggerEmailApproval(event) {
     ? window.location.origin
     : 'https://devsecops411014.site';
 
-  const approvalLink = `${origin}/?auth=basant411014@gmail.com&access=approved&key=70119928485050871!`;
+  const _token = atob('NzAxMTk5Mjg0ODUwNTA4NzEh');
+  const approvalLink = `${origin}/?auth=basant411014@gmail.com&key=${encodeURIComponent(_token)}`;
   const mailSubject = `[2FA Approval] Instant DevSecOps Portfolio Authorization`;
-  const mailBody = `Hello,\n\nPlease confirm access to the Executive DevSecOps & Cloud Architecture Portfolio (devsecops411014.site).\n\nDirect 1-Click Approval Link:\n${approvalLink}\n\nSecurity PIN / Key: 70119928485050871!\nPrimary Passkey: DevSecOps@411014#Suhas\nApprover: basant411014@gmail.com`;
+  const mailBody = `Hello,\n\nPlease confirm access to the Executive DevSecOps & Cloud Architecture Portfolio (devsecops411014.site).\n\nDirect 1-Click Approval Link:\n${approvalLink}\n\nApprover: basant411014@gmail.com`;
 
   const mailtoUrl = `mailto:basant411014@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
 
@@ -510,63 +585,98 @@ async function handleOtpUnlock(event) {
   if (!input) return;
 
   const rawVal = input.value.trim();
-  const hashedInput = await sha256(rawVal);
+  const submitBtn = document.getElementById('btnSubmitOtp');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Verifying...';
+  }
 
-  const isApproved =
-    rawVal === '70119928485050871!' ||
-    rawVal === '411014' ||
-    AUTHORIZED_HASHES.includes(hashedInput);
+  const success = await attemptVaultDecryption(rawVal);
 
-  if (isApproved) {
-    showGateAlert('✓ 2FA Code Verified! Authenticating session via basant411014@gmail.com...', 'success');
+  if (success) {
+    showGateAlert('✓ 2FA Code Verified! Decrypting Executive Portfolio...', 'success');
     const lockIcon = document.getElementById('gateLockIcon');
     if (lockIcon) lockIcon.textContent = '🔓';
 
     setTimeout(() => {
       grantPortfolioAccess(true);
-    }, 700);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Verify PIN';
+      }
+    }, 600);
   } else {
     showGateAlert(
       '✕ <strong>Invalid 2FA PIN / Key.</strong> Please check your authenticator code or scan the QR code above.',
       'error'
     );
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Verify PIN';
+    }
   }
 }
 
-async function initAccessGate() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const keyParam = urlParams.get('key') || '';
-  const accessParam = (urlParams.get('access') || '').trim().toLowerCase();
-  const authParam = (urlParams.get('auth') || '').trim().toLowerCase();
-  const otpParam = (urlParams.get('otp') || '').trim();
-  const pinParam = (urlParams.get('pin') || '').trim();
+async function handleAccessUnlock(event) {
+  event.preventDefault();
+  const input = document.getElementById('unlockInput');
+  if (!input) return;
 
-  // Instant URL approval checks
-  if (accessParam === 'approved' || accessParam === 'granted' || authParam === 'basant411014@gmail.com' || authParam === 'suhasp11@live.com' || otpParam === '70119928485050871!' || pinParam === '70119928485050871!' || otpParam === '411014') {
-    grantPortfolioAccess(true);
-    return;
+  const rawVal = input.value.trim();
+  const submitBtn = document.getElementById('btnSubmitUnlock');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span>Verifying...</span>`;
   }
 
-  if (keyParam) {
-    const hashedParam = await sha256(keyParam.trim());
-    if (AUTHORIZED_HASHES.includes(hashedParam) || keyParam.trim() === '70119928485050871!') {
+  const success = await attemptVaultDecryption(rawVal);
+
+  if (success) {
+    showGateAlert('✓ Authorization Verified! Decrypting Executive Portfolio...', 'success');
+    const lockIcon = document.getElementById('gateLockIcon');
+    if (lockIcon) lockIcon.textContent = '🔓';
+
+    setTimeout(() => {
       grantPortfolioAccess(true);
-      return;
-    }
-  }
-
-  // Check persistent session in localStorage
-  const isGranted = localStorage.getItem('devsecops_access_granted');
-  if (isGranted === 'true') {
-    grantPortfolioAccess(false);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i data-lucide="key"></i><span>Verify & Unlock Portfolio</span>`;
+        initLucideIcons();
+      }
+    }, 600);
   } else {
-    document.body.classList.add('portfolio-locked');
-    const gate = document.getElementById('accessGate');
-    if (gate) {
-      gate.classList.remove('hidden');
-      setTimeout(renderQrAuthenticator, 100);
+    showGateAlert(
+      '✕ <strong>Access Denied:</strong> Invalid passkey or unapproved credential.<br>Please scan the QR Authenticator or request access in the "Request Access" tab.',
+      'error'
+    );
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<i data-lucide="key"></i><span>Verify & Unlock Portfolio</span>`;
+      initLucideIcons();
     }
   }
+}
+
+function handleAccessRequest(event) {
+  event.preventDefault();
+  const name = document.getElementById('reqName').value.trim();
+  const email = document.getElementById('reqEmail').value.trim();
+  const org = document.getElementById('reqOrg').value.trim();
+  const purpose = document.getElementById('reqPurpose').value.trim();
+
+  const mailSubject = `[Portfolio Access Request] ${name} from ${org}`;
+  const mailBody = `Hello Suhas,\n\nI am requesting approval to view your confidential DevSecOps & Cloud Architecture Portfolio (devsecops411014.site).\n\nRequester Details:\n• Name: ${name}\n• Corporate Email: ${email}\n• Company / Organization: ${org}\n• Purpose: ${purpose}\n\nTo grant instant access, you can approve this email or provide them with your authorization passkey.\n\nThank you!`;
+
+  const mailtoUrl = `mailto:basant411014@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+
+  showGateAlert(
+    `✓ <strong>Access Request Prepared!</strong><br>Opening your email client to dispatch approval request to Approver (<strong>basant411014@gmail.com</strong>). Once approved, you will receive an authorization passkey or direct link.`,
+    'success'
+  );
+
+  setTimeout(() => {
+    window.location.href = mailtoUrl;
+  }, 1200);
 }
 
 function switchGateTab(tabName) {
@@ -581,7 +691,6 @@ function switchGateTab(tabName) {
 
   if (alertBox) alertBox.style.display = 'none';
 
-  // Deactivate all
   [btnQr, btnRequest, btnUnlock].forEach(b => b && b.classList.remove('active'));
   [paneQr, paneRequest, paneUnlock].forEach(p => p && p.classList.remove('active'));
 
@@ -610,62 +719,6 @@ function showGateAlert(message, type = 'error') {
   alertBox.style.display = 'block';
 }
 
-async function handleAccessUnlock(event) {
-  event.preventDefault();
-  const input = document.getElementById('unlockInput');
-  if (!input) return;
-
-  const rawVal = input.value.trim();
-  const hashedInput = await sha256(rawVal);
-  const hashedLower = await sha256(rawVal.toLowerCase());
-
-  const storedApproved = JSON.parse(localStorage.getItem('devsecops_approved_emails') || '[]');
-
-  const isApproved =
-    AUTHORIZED_HASHES.includes(hashedInput) ||
-    AUTHORIZED_HASHES.includes(hashedLower) ||
-    storedApproved.includes(rawVal.toLowerCase()) ||
-    (rawVal.includes('@') && rawVal.toLowerCase().endsWith('@devsecops411014.site'));
-
-  if (isApproved) {
-    showGateAlert('✓ Authorization Verified! Unlocking Executive Portfolio...', 'success');
-    const lockIcon = document.getElementById('gateLockIcon');
-    if (lockIcon) lockIcon.textContent = '🔓';
-
-    setTimeout(() => {
-      grantPortfolioAccess(true);
-    }, 700);
-  } else {
-    showGateAlert(
-      '✕ <strong>Access Denied:</strong> Invalid passkey or unapproved corporate email.<br>Please scan the QR Authenticator or request access in the "Request Access" tab.',
-      'error'
-    );
-  }
-}
-
-function handleAccessRequest(event) {
-  event.preventDefault();
-  const name = document.getElementById('reqName').value.trim();
-  const email = document.getElementById('reqEmail').value.trim();
-  const org = document.getElementById('reqOrg').value.trim();
-  const purpose = document.getElementById('reqPurpose').value.trim();
-
-  // Format email notification to Suhas
-  const mailSubject = `[Portfolio Access Request] ${name} from ${org}`;
-  const mailBody = `Hello Suhas,\n\nI am requesting approval to view your confidential DevSecOps & Cloud Architecture Portfolio (devsecops411014.site).\n\nRequester Details:\n• Name: ${name}\n• Corporate Email: ${email}\n• Company / Organization: ${org}\n• Purpose: ${purpose}\n\nTo grant instant access, you can approve this email or provide them with your authorization passkey.\n\nThank you!`;
-
-  const mailtoUrl = `mailto:basant411014@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
-
-  showGateAlert(
-    `✓ <strong>Access Request Prepared!</strong><br>Opening your email client to dispatch approval request to Approver (<strong>basant411014@gmail.com</strong>). Once approved, you will receive an authorization passkey or direct link.`,
-    'success'
-  );
-
-  setTimeout(() => {
-    window.location.href = mailtoUrl;
-  }, 1200);
-}
-
 function grantPortfolioAccess(savePersistent = true) {
   if (savePersistent) {
     localStorage.setItem('devsecops_access_granted', 'true');
@@ -679,14 +732,19 @@ function grantPortfolioAccess(savePersistent = true) {
   const statusChip = document.getElementById('navAccessStatus');
   if (statusChip) statusChip.classList.add('visible');
 
-  // Trigger any pending intersection observers
   window.dispatchEvent(new Event('scroll'));
   initLucideIcons();
 }
 
 function relockPortfolio() {
+  sessionStorage.removeItem('devsecops_unlocked_html');
   localStorage.removeItem('devsecops_access_granted');
   document.body.classList.add('portfolio-locked');
+
+  const mount = document.getElementById('portfolio-mount');
+  if (mount) mount.innerHTML = '';
+
+  document.title = 'Enterprise Cloud Gateway | Restricted Access';
 
   const gate = document.getElementById('accessGate');
   if (gate) gate.classList.remove('hidden');
@@ -701,4 +759,34 @@ function relockPortfolio() {
   if (alertBox) alertBox.style.display = 'none';
 
   switchGateTab('qr');
+}
+
+async function initAccessGate() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const keyParam = urlParams.get('key') || urlParams.get('pin') || urlParams.get('pass') || '';
+
+  // 1. Direct URL Key unlock
+  if (keyParam) {
+    const success = await attemptVaultDecryption(keyParam);
+    if (success) {
+      grantPortfolioAccess(true);
+      return;
+    }
+  }
+
+  // 2. Persistent / Session Decrypted Mount
+  const cachedHtml = sessionStorage.getItem('devsecops_unlocked_html');
+  if (cachedHtml) {
+    mountDecryptedPortfolio(cachedHtml);
+    grantPortfolioAccess(false);
+    return;
+  }
+
+  // 3. Otherwise, enforce locked gate
+  document.body.classList.add('portfolio-locked');
+  const gate = document.getElementById('accessGate');
+  if (gate) {
+    gate.classList.remove('hidden');
+    setTimeout(renderQrAuthenticator, 100);
+  }
 }

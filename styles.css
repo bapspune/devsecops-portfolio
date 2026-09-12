@@ -411,9 +411,76 @@ img { max-width: 100%; display: block; }
   font-size: 1.1rem;
   color: var(--text-secondary);
   max-width: 580px;
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-lg);
   line-height: 1.8;
 }
+
+/* Hero Ready-To-Hire Roles Banner */
+.hero__roles-banner {
+  margin-bottom: var(--space-xl);
+  padding: 0.75rem 1rem;
+  background: rgba(17, 24, 39, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  max-width: 680px;
+}
+.roles-banner__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent-cyan);
+}
+.roles-banner__header i,
+.roles-banner__header svg {
+  width: 14px;
+  height: 14px;
+}
+.roles-banner__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.role-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.75rem;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+.role-pill:hover {
+  background: rgba(56, 189, 248, 0.22);
+  border-color: var(--accent-blue);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.25);
+}
+.role-pill .pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+}
+.role-pill:nth-child(1) .pill-dot { background: var(--accent-cyan); }
+.role-pill:nth-child(2) .pill-dot { background: var(--accent-purple); }
+.role-pill:nth-child(3) .pill-dot { background: var(--accent-blue); }
+.role-pill:nth-child(4) .pill-dot { background: var(--accent-green); }
+.role-pill:nth-child(5) .pill-dot { background: var(--accent-amber); }
 
 .hero__cta {
   display: flex;
@@ -563,6 +630,190 @@ img { max-width: 100%; display: block; }
   font-size: 0.85rem;
   color: var(--text-secondary);
   font-weight: 500;
+}
+
+/* ========================================
+   TARGET ROLES & HIRING MATRIX SECTION
+   ======================================== */
+.roles {
+  position: relative;
+  z-index: 1;
+}
+
+.roles__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: var(--space-xl);
+  margin-top: var(--space-2xl);
+}
+
+.role-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  backdrop-filter: blur(14px);
+  transition: all var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.role-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gradient-glow);
+  opacity: 0.6;
+  transition: opacity var(--transition-base), height var(--transition-base);
+}
+
+.role-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-6px);
+}
+
+.role-card:hover::before {
+  opacity: 1;
+  height: 4px;
+}
+
+.role-card--devsecops::before {
+  background: linear-gradient(90deg, #38bdf8, #22d3ee);
+}
+.role-card--ai::before {
+  background: linear-gradient(90deg, #a78bfa, #ec4899);
+}
+.role-card--devops::before {
+  background: linear-gradient(90deg, #38bdf8, #34d399);
+}
+.role-card--sre::before {
+  background: linear-gradient(90deg, #34d399, #10b981);
+}
+.role-card--cloud::before {
+  background: linear-gradient(90deg, #f59e0b, #38bdf8);
+}
+
+.role-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.role-card__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  background: var(--gradient-card);
+  border: 1px solid var(--border-glass);
+  flex-shrink: 0;
+}
+
+.role-card__badge-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 0.35rem;
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.role-card__title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.25;
+}
+
+.role-card__mission {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-md);
+}
+
+.role-card__deliverables {
+  list-style: none;
+  margin-bottom: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.role-card__deliverables li {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.45;
+}
+
+.role-card__deliverables li .check-icon {
+  color: var(--accent-green);
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.role-card__skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-glass);
+  margin-bottom: var(--space-md);
+}
+
+.role-skill-pill {
+  font-family: var(--font-mono);
+  font-size: 0.73rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.role-card__action {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-md);
+  background: rgba(56, 189, 248, 0.09);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.role-card__action:hover {
+  background: var(--accent-blue);
+  color: #0a0e1a;
+  box-shadow: 0 4px 18px rgba(56, 189, 248, 0.35);
+  transform: translateY(-2px);
 }
 
 /* ========================================
@@ -1929,3 +2180,36 @@ body.portfolio-locked #navbar {
   white-space: nowrap;
 }
 
+@media (max-width: 768px) {
+  .nav__links {
+    display: none;
+    flex-direction: column;
+    background: rgba(10, 14, 26, .9);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    padding: var(--space-md);
+  }
+  .nav__links.active {
+    display: flex;
+  }
+  .nav__toggle {
+    display: block;
+  }
+
+  .stats__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .nav__links {
+    padding: var(--space-sm);
+  }
+  .stats__grid {
+    grid-template-columns: 1fr;
+  }
+  .hero {
+    padding-top: 60px;
+  }
+}
