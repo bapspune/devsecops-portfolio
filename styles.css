@@ -271,6 +271,66 @@ img { max-width: 100%; display: block; }
 .nav__logo:hover .logo-domain {
   color: var(--accent-cyan);
 }
+.nav__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+}
+.hero__profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: var(--space-xl);
+  padding: 0.85rem 1.25rem;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(14px);
+  max-width: 520px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(56, 189, 248, 0.15);
+}
+.hero__profile-img {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #38bdf8;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+  flex-shrink: 0;
+}
+.hero__profile-info {
+  display: flex;
+  flex-direction: column;
+}
+.hero__profile-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.2rem;
+}
+.hero__profile-tag {
+  font-size: 0.82rem;
+  color: #38bdf8;
+  margin-bottom: 0.35rem;
+  font-weight: 500;
+}
+.hero__profile-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  color: #10b981;
+}
+.hero__profile-status .status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
 .badge-separator {
   opacity: 0.45;
   margin: 0 0.15rem;
@@ -1096,12 +1156,10 @@ img { max-width: 100%; display: block; }
 }
 
 .timeline-item__details {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s var(--ease-out);
-}
-.timeline-item.expanded .timeline-item__details {
-  max-height: 2000px;
+  max-height: none;
+  overflow: visible;
+  opacity: 1;
+  display: block;
 }
 
 .timeline-item__details ul {
@@ -1126,20 +1184,8 @@ img { max-width: 100%; display: block; }
 }
 
 .timeline-item__expand {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xs);
-  font-size: 0.85rem;
-  color: var(--accent-blue);
-  cursor: pointer;
-  margin-top: var(--space-sm);
-  font-weight: 500;
-  transition: color var(--transition-fast);
-  background: none;
-  border: none;
-  font-family: var(--font-body);
+  display: none;
 }
-.timeline-item__expand:hover { color: var(--accent-cyan); }
 .timeline-item__expand .arrow {
   transition: transform var(--transition-base);
   font-size: 0.7rem;

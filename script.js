@@ -12,6 +12,8 @@ if (window.location.protocol === 'http:' && !['localhost', '127.0.0.1'].includes
 document.addEventListener('DOMContentLoaded', () => {
   initParticleNetwork();
   initLucideIcons();
+  initNavbarBehavior();
+  initMobileNav();
   initAccessGate();
 });
 
@@ -767,11 +769,21 @@ function grantPortfolioAccess(savePersistent = true) {
   const statusChip = document.getElementById('navAccessStatus');
   if (statusChip) statusChip.classList.add('visible');
 
+  // Immediately initialize portfolio scripts and activate all sections
+  initDecryptedPortfolio();
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+
   // Trigger 3D architecture init / resize
   if (window.DevSecOps3D && typeof window.DevSecOps3D.init === 'function') {
     setTimeout(() => {
       window.DevSecOps3D.init();
     }, 150);
+  }
+
+  if (window.location.hash) {
+    setTimeout(() => {
+      scrollToHash(window.location.hash);
+    }, 200);
   }
 
   window.dispatchEvent(new Event('scroll'));
