@@ -1,0 +1,11 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "bash run-tests.sh"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.0"
+  }
+}

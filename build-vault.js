@@ -38,6 +38,7 @@ async function buildVault() {
   // 4. Authorized secrets
   const secrets = [
     '70119928485050871!',
+    '70119928485050871',
     '411014',
     'DevSecOps@411014#Suhas',
     'Suhas#CloudArch2026!',

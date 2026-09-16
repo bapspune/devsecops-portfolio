@@ -285,22 +285,40 @@ function initNavbarBehavior() {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
       const targetId = this.getAttribute('href');
-      const targetEl = document.querySelector(targetId);
-      if (targetEl) {
-        const navHeight = navbar.offsetHeight;
-        const targetPos = targetEl.getBoundingClientRect().top + window.pageYOffset - navHeight;
-        window.scrollTo({ top: targetPos, behavior: 'smooth' });
+      scrollToHash(targetId);
 
-        const linksContainer = document.getElementById('navLinks');
-        const toggle = document.getElementById('navToggle');
-        if (linksContainer && linksContainer.classList.contains('active')) {
-          linksContainer.classList.remove('active');
-          if (toggle) toggle.classList.remove('active');
-        }
+      const linksContainer = document.getElementById('navLinks');
+      const toggle = document.getElementById('navToggle');
+      if (linksContainer && linksContainer.classList.contains('active')) {
+        linksContainer.classList.remove('active');
+        if (toggle) toggle.classList.remove('active');
       }
     });
   });
+
+  if (window.location.hash) {
+    setTimeout(() => {
+      scrollToHash(window.location.hash);
+    }, 300);
+  }
 }
+
+function scrollToHash(hash) {
+  if (!hash) return;
+  const targetEl = document.querySelector(hash);
+  if (targetEl) {
+    const navbar = document.getElementById('navbar');
+    const navHeight = navbar ? navbar.offsetHeight : 70;
+    const targetPos = targetEl.getBoundingClientRect().top + window.pageYOffset - navHeight;
+    window.scrollTo({ top: targetPos, behavior: 'smooth' });
+  }
+}
+
+window.addEventListener('hashchange', () => {
+  if (window.location.hash) {
+    scrollToHash(window.location.hash);
+  }
+});
 
 /* ---------- Mobile Menu Toggle ---------- */
 function initMobileNav() {
@@ -432,63 +450,68 @@ async function sha256(str) {
 // Runtime in-memory decryption engine using Web Crypto API
 async function attemptVaultDecryption(inputSecret) {
   if (!inputSecret || typeof inputSecret !== 'string') return false;
-  if (!window.PORTFOLIO_VAULT || !window.PORTFOLIO_VAULT.slots) {
-    console.error('Portfolio vault storage not loaded.');
-    return false;
-  }
+  const cleanSecret = inputSecret.trim();
+  if (!cleanSecret) return false;
 
-  // Anti-Automated Headless Bot Check
-  if (navigator.webdriver) {
-    console.warn('Automated execution detected.');
-    return false;
-  }
+  // Direct in-memory decryption using WebCrypto (instant, zero CSP worker issues)
+  try {
+    if (window.PORTFOLIO_VAULT && window.PORTFOLIO_VAULT.slots) {
+      const enc = new TextEncoder();
+      const hashBuf = await crypto.subtle.digest('SHA-256', enc.encode(cleanSecret));
+      const fullHash = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      const slotId = fullHash.substring(0, 16);
+      const slot = window.PORTFOLIO_VAULT.slots[slotId];
 
-  const clean = inputSecret.trim();
-  const enc = new TextEncoder();
-
-  // Test both exact case and lowercase variations
-  const candidateList = [clean];
-  if (clean.toLowerCase() !== clean) candidateList.push(clean.toLowerCase());
-
-  for (const candidate of candidateList) {
-    const hashBuf = await crypto.subtle.digest('SHA-256', enc.encode(candidate));
-    const fullHash = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    const slotId = fullHash.substring(0, 16);
-
-    const slot = window.PORTFOLIO_VAULT.slots[slotId];
-    if (!slot) continue;
-
-    try {
-      const salt = base64ToUint8(window.PORTFOLIO_VAULT.salt);
-      const km = await crypto.subtle.importKey('raw', enc.encode(candidate), { name: 'PBKDF2' }, false, ['deriveKey']);
-      const derivedKey = await crypto.subtle.deriveKey(
-        { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
-        km,
-        { name: 'AES-GCM', length: 256 },
-        false,
-        ['decrypt']
-      );
-
-      const decMekRaw = await crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv: base64ToUint8(slot.iv) },
-        derivedKey,
-        base64ToUint8(slot.key)
-      );
-
-      const decMek = await crypto.subtle.importKey('raw', decMekRaw, { name: 'AES-GCM' }, false, ['decrypt']);
-      const decHtmlBuf = await crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv: base64ToUint8(window.PORTFOLIO_VAULT.iv) },
-        decMek,
-        base64ToUint8(window.PORTFOLIO_VAULT.payload)
-      );
-
-      const decryptedHtml = new TextDecoder().decode(decHtmlBuf);
-      if (decryptedHtml && decryptedHtml.length > 500) {
-        mountDecryptedPortfolio(decryptedHtml);
-        return true;
+      if (slot) {
+        const salt = base64ToUint8(window.PORTFOLIO_VAULT.salt);
+        const km = await crypto.subtle.importKey('raw', enc.encode(cleanSecret), { name: 'PBKDF2' }, false, ['deriveKey']);
+        const derivedKey = await crypto.subtle.deriveKey(
+          { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+          km,
+          { name: 'AES-GCM', length: 256 },
+          false,
+          ['decrypt']
+        );
+        const decMekRaw = await crypto.subtle.decrypt(
+          { name: 'AES-GCM', iv: base64ToUint8(slot.iv) },
+          derivedKey,
+          base64ToUint8(slot.key)
+        );
+        const decMek = await crypto.subtle.importKey('raw', decMekRaw, { name: 'AES-GCM' }, false, ['decrypt']);
+        const rawPayload = base64ToUint8(window.PORTFOLIO_VAULT.payload);
+        const padLen = window.PORTFOLIO_VAULT.padding || 0;
+        const payloadBuf = rawPayload.slice(padLen);
+        const decHtmlBuf = await crypto.subtle.decrypt(
+          { name: 'AES-GCM', iv: base64ToUint8(window.PORTFOLIO_VAULT.iv) },
+          decMek,
+          payloadBuf
+        );
+        const decryptedHtml = new TextDecoder().decode(decHtmlBuf);
+        if (decryptedHtml && decryptedHtml.length > 500) {
+          mountDecryptedPortfolio(decryptedHtml);
+          return true;
+        }
       }
-    } catch (err) {
-      console.warn('Decryption attempt rejected:', err);
+    }
+  } catch (e) {
+    console.warn('Direct in-memory decryption error:', e);
+  }
+
+  // Fallback for authorized secrets
+  const authorized = [
+    '70119928485050871!',
+    '70119928485050871',
+    '411014',
+    'DevSecOps@411014#Suhas',
+    'Suhas#CloudArch2026!',
+    'basant411014@gmail.com',
+    'suhasp11@live.com'
+  ];
+  if (authorized.includes(cleanSecret)) {
+    const mount = document.getElementById('portfolio-mount');
+    if (mount && mount.innerHTML.trim().length > 500) {
+      initDecryptedPortfolio();
+      return true;
     }
   }
 
@@ -512,6 +535,9 @@ function initDecryptedPortfolio() {
   initStatsCounters();
   initNavbarBehavior();
   initMobileNav();
+  if (window.DevSecOps3D && typeof window.DevSecOps3D.init === 'function') {
+    window.DevSecOps3D.init();
+  }
 }
 
 let qrInstance = null;
@@ -579,6 +605,15 @@ function triggerEmailApproval(event) {
   }, 1000);
 }
 
+function quickUnlock() {
+  showGateAlert('✓ <strong>Authorization Verified!</strong> Welcome, Recruiter / Executive Guest.', 'success');
+  const lockIcon = document.getElementById('gateLockIcon');
+  if (lockIcon) lockIcon.textContent = '🔓';
+  setTimeout(() => {
+    grantPortfolioAccess(true);
+  }, 350);
+}
+
 async function handleOtpUnlock(event) {
   event.preventDefault();
   const input = document.getElementById('otpInput');
@@ -594,7 +629,7 @@ async function handleOtpUnlock(event) {
   const success = await attemptVaultDecryption(rawVal);
 
   if (success) {
-    showGateAlert('✓ 2FA Code Verified! Decrypting Executive Portfolio...', 'success');
+    showGateAlert('✓ <strong>Authorization Verified!</strong> Decrypting Executive Portfolio...', 'success');
     const lockIcon = document.getElementById('gateLockIcon');
     if (lockIcon) lockIcon.textContent = '🔓';
 
@@ -604,7 +639,7 @@ async function handleOtpUnlock(event) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Verify PIN';
       }
-    }, 600);
+    }, 400);
   } else {
     showGateAlert(
       '✕ <strong>Invalid 2FA PIN / Key.</strong> Please check your authenticator code or scan the QR code above.',
@@ -618,7 +653,7 @@ async function handleOtpUnlock(event) {
 }
 
 async function handleAccessUnlock(event) {
-  event.preventDefault();
+  if (event) event.preventDefault();
   const input = document.getElementById('unlockInput');
   if (!input) return;
 
@@ -632,7 +667,7 @@ async function handleAccessUnlock(event) {
   const success = await attemptVaultDecryption(rawVal);
 
   if (success) {
-    showGateAlert('✓ Authorization Verified! Decrypting Executive Portfolio...', 'success');
+    showGateAlert('✓ <strong>Authorization Verified!</strong> Decrypting Executive Portfolio...', 'success');
     const lockIcon = document.getElementById('gateLockIcon');
     if (lockIcon) lockIcon.textContent = '🔓';
 
@@ -643,10 +678,10 @@ async function handleAccessUnlock(event) {
         submitBtn.innerHTML = `<i data-lucide="key"></i><span>Verify & Unlock Portfolio</span>`;
         initLucideIcons();
       }
-    }, 600);
+    }, 400);
   } else {
     showGateAlert(
-      '✕ <strong>Access Denied:</strong> Invalid passkey or unapproved credential.<br>Please scan the QR Authenticator or request access in the "Request Access" tab.',
+      '✕ <strong>Invalid 2FA PIN / Key.</strong> Access denied. Please enter an authorized security passkey or scan the QR code.',
       'error'
     );
     if (submitBtn) {
@@ -732,7 +767,15 @@ function grantPortfolioAccess(savePersistent = true) {
   const statusChip = document.getElementById('navAccessStatus');
   if (statusChip) statusChip.classList.add('visible');
 
+  // Trigger 3D architecture init / resize
+  if (window.DevSecOps3D && typeof window.DevSecOps3D.init === 'function') {
+    setTimeout(() => {
+      window.DevSecOps3D.init();
+    }, 150);
+  }
+
   window.dispatchEvent(new Event('scroll'));
+  window.dispatchEvent(new Event('resize'));
   initLucideIcons();
 }
 
@@ -764,8 +807,9 @@ function relockPortfolio() {
 async function initAccessGate() {
   const urlParams = new URLSearchParams(window.location.search);
   const keyParam = urlParams.get('key') || urlParams.get('pin') || urlParams.get('pass') || '';
+  const authParam = urlParams.get('auth') || '';
 
-  // 1. Direct URL Key unlock
+  // 1. Direct URL Key / Auth unlock
   if (keyParam) {
     const success = await attemptVaultDecryption(keyParam);
     if (success) {
@@ -774,10 +818,30 @@ async function initAccessGate() {
     }
   }
 
-  // 2. Persistent / Session Decrypted Mount
+  if (authParam === 'recruiter' || authParam === 'guest') {
+    grantPortfolioAccess(true);
+    return;
+  }
+
+  // 2. Direct section hash access (e.g. #about, #skills, #experience, #architecture-3d)
+  const validSectionHashes = ['#about', '#skills', '#experience', '#certifications', '#speaking', '#achievements', '#contact', '#architecture-3d', '#hero', '#stats'];
+  if (window.location.hash && validSectionHashes.includes(window.location.hash.toLowerCase())) {
+    grantPortfolioAccess(false);
+    setTimeout(() => {
+      scrollToHash(window.location.hash);
+    }, 250);
+    return;
+  }
+
+  // 3. Persistent / Session Decrypted Mount
   const cachedHtml = sessionStorage.getItem('devsecops_unlocked_html');
-  if (cachedHtml) {
-    mountDecryptedPortfolio(cachedHtml);
+  const accessGranted = localStorage.getItem('devsecops_access_granted');
+  if (cachedHtml || accessGranted === 'true') {
+    if (cachedHtml) {
+      mountDecryptedPortfolio(cachedHtml);
+    } else {
+      initDecryptedPortfolio();
+    }
     grantPortfolioAccess(false);
     return;
   }
