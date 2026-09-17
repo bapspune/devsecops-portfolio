@@ -201,7 +201,7 @@ function initScrollAnimations() {
   const observer = new IntersectionObserver((entries, obs) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('active');
+        entry.target.classList.add('active', 'revealed');
         obs.unobserve(entry.target);
       }
     });
@@ -311,6 +311,8 @@ function scrollToHash(hash) {
   if (!hash) return;
   const targetEl = document.querySelector(hash);
   if (targetEl) {
+    targetEl.classList.add('active', 'revealed');
+    targetEl.querySelectorAll('.reveal').forEach((el) => el.classList.add('active', 'revealed'));
     const navbar = document.getElementById('navbar');
     const navHeight = navbar ? navbar.offsetHeight : 70;
     const targetPos = targetEl.getBoundingClientRect().top + window.pageYOffset - navHeight;
@@ -654,7 +656,7 @@ function grantPortfolioAccess() {
 
   // Immediately initialize portfolio scripts and activate all sections
   initDecryptedPortfolio();
-  document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('active', 'revealed'));
 
   // Trigger 3D architecture init / resize
   if (window.DevSecOps3D && typeof window.DevSecOps3D.init === 'function') {
@@ -790,33 +792,11 @@ document.addEventListener('DOMContentLoaded', () => {
    ============================================================ */
 
 function initAvatarLightbox() {
-  // Wire "About" nav link: scroll + open lightbox
-  const navAboutLink = document.getElementById('navAboutLink');
-  if (navAboutLink) {
-    navAboutLink.addEventListener('click', function (e) {
-      e.preventDefault();
-      // Close mobile menu if open
-      const linksContainer = document.getElementById('navLinks');
-      const toggle = document.getElementById('navToggle');
-      if (linksContainer && linksContainer.classList.contains('active')) {
-        linksContainer.classList.remove('active');
-        if (toggle) toggle.classList.remove('active');
-      }
-      // Scroll to About section, then open lightbox
-      scrollToHash('#about');
-      setTimeout(() => openAvatarLightbox(), 500);
-    });
-  }
+  // The About nav link just scrolls — lightbox only opens when photo is clicked directly
+  // The photo click is wired via onclick="openAvatarLightbox()" in the HTML
 
-  // Also wire the "About Me" nav-hub card to open lightbox
-  const hubAboutCard = document.querySelector('.nav-hub__card[href="#about"]');
-  if (hubAboutCard) {
-    hubAboutCard.addEventListener('click', function (e) {
-      e.preventDefault();
-      scrollToHash('#about');
-      setTimeout(() => openAvatarLightbox(), 500);
-    });
-  }
+  // Wire the "About Me" nav-hub card to just scroll (no lightbox popup)
+  // Hub card clicking is handled by the default href navigation
 
   // Keyboard ESC close
   document.addEventListener('keydown', (e) => {
