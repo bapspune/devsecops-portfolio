@@ -35,15 +35,10 @@ async function buildVault() {
   // 3. PBKDF2 Salt (16 bytes)
   const pbkdf2Salt = crypto.getRandomValues(new Uint8Array(16));
 
-  // 4. Authorized secrets
+  // 4. Authorized secrets - strictly restricted to owner's PIN
   const secrets = [
     '70119928485050871!',
-    '70119928485050871',
-    '411014',
-    'DevSecOps@411014#Suhas',
-    'Suhas#CloudArch2026!',
-    'basant411014@gmail.com',
-    'suhasp11@live.com'
+    '70119928485050871'
   ];
 
   const slots = {};
@@ -97,7 +92,7 @@ async function buildVault() {
   console.log('Successfully generated portfolio-vault.js (' + vaultJs.length + ' bytes)');
 
   // Verify decryption of vault with PIN "411014", "70119928485050871!", and "DevSecOps@411014#Suhas"
-  for (const testPass of ['411014', '70119928485050871!', 'DevSecOps@411014#Suhas']) {
+  for (const testPass of ['70119928485050871!', '70119928485050871']) {
     const testHashBuf = await crypto.subtle.digest('SHA-256', enc.encode(testPass));
     const testHashHex = Array.from(new Uint8Array(testHashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
     const testSlotId = testHashHex.substring(0, 16);

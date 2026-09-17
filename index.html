@@ -91,25 +91,20 @@
         <h2 class="gate-title">Executive Portfolio Access</h2>
         <p class="gate-subtitle">
           Confidential Enterprise Cloud & DevSecOps Architecture Portfolio.
-          Access requires authorized credentials or quick recruiter authentication.
+          Access is strictly protected and restricted to authorized personnel with a security passkey.
         </p>
       </div>
 
-      <!-- Quick 1-Click Access for Visitors / Recruiters -->
-      <button type="button" class="gate-quick-btn" onclick="quickUnlock()">
-        <span>🚀 Recruiter & Executive Quick Preview (1-Click)</span>
-      </button>
-
       <div class="gate-tabs">
-        <button class="gate-tab active" id="tabBtnQr" onclick="switchGateTab('qr')">📱 QR Authenticator</button>
+        <button class="gate-tab active" id="tabBtnUnlock" onclick="switchGateTab('unlock')">🔑 Security PIN / Key</button>
+        <button class="gate-tab" id="tabBtnQr" onclick="switchGateTab('qr')">📱 QR Authenticator</button>
         <button class="gate-tab" id="tabBtnRequest" onclick="switchGateTab('request')">✉️ Request Access</button>
-        <button class="gate-tab" id="tabBtnUnlock" onclick="switchGateTab('unlock')">🔑 Passkey / Key</button>
       </div>
 
       <div id="gateAlert" class="gate-alert"></div>
 
       <!-- Tab 1: QR Code 2FA Authenticator -->
-      <div class="gate-tab-pane active" id="paneQr">
+      <div class="gate-tab-pane" id="paneQr">
         <div class="qr-container">
           <div class="qr-scanner-line"></div>
           <div id="qrCodeDisplay" class="qr-box"></div>
@@ -167,7 +162,7 @@
       </div>
 
       <!-- Tab 3: Enter Approved Email / Key -->
-      <div class="gate-tab-pane" id="paneUnlock">
+      <div class="gate-tab-pane active" id="paneUnlock">
         <form id="accessUnlockForm" onsubmit="handleAccessUnlock(event)">
           <div class="gate-form-group">
             <label for="unlockInput">Approved Email ID or Security Passkey</label>
@@ -194,7 +189,7 @@
   <nav class="nav" id="navbar">
     <div class="container nav__inner">
       <a href="#" class="nav__logo">
-        <img src="crop_suhas_pic_1.jpg" class="nav__avatar" alt="Suhas Phunde">
+        <img src="avatar.png" class="nav__avatar" alt="Suhas Phunde">
         <span class="logo-mark">SP</span>
         <span class="logo-domain">devsecops411014.site</span>
       </a>
@@ -228,7 +223,7 @@
       <div class="hero__content">
         <!-- Verified Executive Profile Badge with Suhas's Real Photo -->
         <div class="hero__profile-badge reveal">
-          <img src="crop_suhas_pic_1.jpg" alt="Suhas Phunde - Senior DevSecOps Engineer & Cloud Architect" class="hero__profile-img">
+          <img src="avatar.png" alt="Suhas Phunde - Senior DevSecOps Engineer & Cloud Architect" class="hero__profile-img">
           <div class="hero__profile-info">
             <span class="hero__profile-name">Suhas Phunde</span>
             <span class="hero__profile-tag">Senior DevSecOps Engineer & Cloud Architect</span>
@@ -605,9 +600,18 @@
         17+ years of continuous engineering excellence across mission-critical enterprise systems.
       </p>
 
+      <div class="timeline-controls reveal">
+        <button type="button" class="timeline-control-btn active" id="btnExpandAll" onclick="toggleAllTimeline(true)">
+          <i data-lucide="chevrons-down"></i> <span>Expand All Details</span>
+        </button>
+        <button type="button" class="timeline-control-btn" id="btnCollapseAll" onclick="toggleAllTimeline(false)">
+          <i data-lucide="chevrons-up"></i> <span>Collapse All</span>
+        </button>
+      </div>
+
       <div class="timeline">
         <!-- 1 — GNQ Insilico -->
-        <div class="timeline-item reveal">
+        <div class="timeline-item reveal expanded">
           <div class="timeline-item__dot"></div>
           <div class="timeline-item__card">
             <div class="timeline-item__header">
@@ -618,7 +622,7 @@
               IBM Corporation — <span class="client">Client: GNQ Insilico Inc.</span> · New Jersey, United States
             </p>
             <button class="timeline-item__expand" onclick="toggleTimeline(this)">
-              View details <span class="arrow">▾</span>
+              Hide details <span class="arrow">▴</span>
             </button>
             <div class="timeline-item__details">
               <ul>
@@ -634,7 +638,7 @@
         </div>
 
         <!-- 2 — OCC -->
-        <div class="timeline-item reveal">
+        <div class="timeline-item reveal expanded">
           <div class="timeline-item__dot"></div>
           <div class="timeline-item__card">
             <div class="timeline-item__header">
@@ -645,7 +649,7 @@
               IBM Corporation — <span class="client">Client: Options Clearing Corp</span> · New Jersey, United States
             </p>
             <button class="timeline-item__expand" onclick="toggleTimeline(this)">
-              View details <span class="arrow">▾</span>
+              Hide details <span class="arrow">▴</span>
             </button>
             <div class="timeline-item__details">
               <ul>
@@ -658,7 +662,7 @@
         </div>
 
         <!-- 3 — T-Mobile -->
-        <div class="timeline-item reveal">
+        <div class="timeline-item reveal expanded">
           <div class="timeline-item__dot"></div>
           <div class="timeline-item__card">
             <div class="timeline-item__header">
@@ -670,7 +674,7 @@
             </p>
             <span class="timeline-item__kudos">⭐ RECEIVED: T-Mobile Client Appreciation for Outstanding Engineering Contributions (Nov 2025)</span>
             <button class="timeline-item__expand" onclick="toggleTimeline(this)">
-              View details <span class="arrow">▾</span>
+              Hide details <span class="arrow">▴</span>
             </button>
             <div class="timeline-item__details">
               <ul>
@@ -685,7 +689,7 @@
         </div>
 
         <!-- 4 — Barclays -->
-        <div class="timeline-item reveal">
+        <div class="timeline-item reveal expanded">
           <div class="timeline-item__dot"></div>
           <div class="timeline-item__card">
             <div class="timeline-item__header">
@@ -696,7 +700,7 @@
               IBM Global Services — <span class="client">Client: Barclays</span> · Pune, India
             </p>
             <button class="timeline-item__expand" onclick="toggleTimeline(this)">
-              View details <span class="arrow">▾</span>
+              Hide details <span class="arrow">▴</span>
             </button>
             <div class="timeline-item__details">
               <ul>
@@ -709,7 +713,7 @@
         </div>
 
         <!-- 5 — Bendigo -->
-        <div class="timeline-item reveal">
+        <div class="timeline-item reveal expanded">
           <div class="timeline-item__dot"></div>
           <div class="timeline-item__card">
             <div class="timeline-item__header">
@@ -720,7 +724,7 @@
               IBM Global Services — <span class="client">Client: Bendigo and Adelaide Bank</span> · Pune, India
             </p>
             <button class="timeline-item__expand" onclick="toggleTimeline(this)">
-              View details <span class="arrow">▾</span>
+              Hide details <span class="arrow">▴</span>
             </button>
             <div class="timeline-item__details">
               <ul>
@@ -733,7 +737,7 @@
         </div>
 
         <!-- 6 — Xcel Energy -->
-        <div class="timeline-item reveal">
+        <div class="timeline-item reveal expanded">
           <div class="timeline-item__dot"></div>
           <div class="timeline-item__card">
             <div class="timeline-item__header">
@@ -744,7 +748,7 @@
               IBM Global Services — <span class="client">Client: Xcel Energy – US</span> · Pune, India
             </p>
             <button class="timeline-item__expand" onclick="toggleTimeline(this)">
-              View details <span class="arrow">▾</span>
+              Hide details <span class="arrow">▴</span>
             </button>
             <div class="timeline-item__details">
               <ul>
@@ -757,7 +761,7 @@
         </div>
 
         <!-- 7 — Mastercard -->
-        <div class="timeline-item reveal">
+        <div class="timeline-item reveal expanded">
           <div class="timeline-item__dot"></div>
           <div class="timeline-item__card">
             <div class="timeline-item__header">
@@ -768,7 +772,7 @@
               Mastercard Technology Pvt Ltd · Pune, India
             </p>
             <button class="timeline-item__expand" onclick="toggleTimeline(this)">
-              View details <span class="arrow">▾</span>
+              Hide details <span class="arrow">▴</span>
             </button>
             <div class="timeline-item__details">
               <ul>
@@ -781,7 +785,7 @@
         </div>
 
         <!-- 8 — Principal Global -->
-        <div class="timeline-item reveal">
+        <div class="timeline-item reveal expanded">
           <div class="timeline-item__dot"></div>
           <div class="timeline-item__card">
             <div class="timeline-item__header">
@@ -792,7 +796,7 @@
               Principal Global Services Pvt. Ltd · Pune, India
             </p>
             <button class="timeline-item__expand" onclick="toggleTimeline(this)">
-              View details <span class="arrow">▾</span>
+              Hide details <span class="arrow">▴</span>
             </button>
             <div class="timeline-item__details">
               <ul>
@@ -804,7 +808,7 @@
         </div>
 
         <!-- 9 — SunGard / FIS -->
-        <div class="timeline-item reveal">
+        <div class="timeline-item reveal expanded">
           <div class="timeline-item__dot"></div>
           <div class="timeline-item__card">
             <div class="timeline-item__header">
@@ -815,7 +819,7 @@
               SunGard Global Solutions (FIS) · Pune, India
             </p>
             <button class="timeline-item__expand" onclick="toggleTimeline(this)">
-              View details <span class="arrow">▾</span>
+              Hide details <span class="arrow">▴</span>
             </button>
             <div class="timeline-item__details">
               <ul>
@@ -828,7 +832,7 @@
         </div>
 
         <!-- 10 — Convergys -->
-        <div class="timeline-item reveal">
+        <div class="timeline-item reveal expanded">
           <div class="timeline-item__dot"></div>
           <div class="timeline-item__card">
             <div class="timeline-item__header">
@@ -839,7 +843,7 @@
               Convergys India Services — <span class="client">Client: Microsoft</span> · Pune, India
             </p>
             <button class="timeline-item__expand" onclick="toggleTimeline(this)">
-              View details <span class="arrow">▾</span>
+              Hide details <span class="arrow">▴</span>
             </button>
             <div class="timeline-item__details">
               <ul>

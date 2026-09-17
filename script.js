@@ -499,15 +499,10 @@ async function attemptVaultDecryption(inputSecret) {
     console.warn('Direct in-memory decryption error:', e);
   }
 
-  // Fallback for authorized secrets
+  // Fallback for authorized secrets - strictly restricted to owner's PIN
   const authorized = [
     '70119928485050871!',
-    '70119928485050871',
-    '411014',
-    'DevSecOps@411014#Suhas',
-    'Suhas#CloudArch2026!',
-    'basant411014@gmail.com',
-    'suhasp11@live.com'
+    '70119928485050871'
   ];
   if (authorized.includes(cleanSecret)) {
     const mount = document.getElementById('portfolio-mount');
@@ -607,13 +602,43 @@ function triggerEmailApproval(event) {
   }, 1000);
 }
 
-function quickUnlock() {
-  showGateAlert('✓ <strong>Authorization Verified!</strong> Welcome, Recruiter / Executive Guest.', 'success');
-  const lockIcon = document.getElementById('gateLockIcon');
-  if (lockIcon) lockIcon.textContent = '🔓';
-  setTimeout(() => {
-    grantPortfolioAccess(true);
-  }, 350);
+// Interactive Job Experience Details Toggle
+function toggleTimeline(el) {
+  const item = el.closest('.timeline-item');
+  if (!item) return;
+  const isExpanded = item.classList.contains('expanded');
+  const btn = item.querySelector('.timeline-item__expand');
+  if (isExpanded) {
+    item.classList.remove('expanded');
+    if (btn) btn.innerHTML = 'View details <span class="arrow">▾</span>';
+  } else {
+    item.classList.add('expanded');
+    if (btn) btn.innerHTML = 'Hide details <span class="arrow">▴</span>';
+  }
+}
+
+function toggleAllTimeline(expand = true) {
+  document.querySelectorAll('.timeline-item').forEach(item => {
+    const btn = item.querySelector('.timeline-item__expand');
+    if (expand) {
+      item.classList.add('expanded');
+      if (btn) btn.innerHTML = 'Hide details <span class="arrow">▴</span>';
+    } else {
+      item.classList.remove('expanded');
+      if (btn) btn.innerHTML = 'View details <span class="arrow">▾</span>';
+    }
+  });
+  const btnExpand = document.getElementById('btnExpandAll');
+  const btnCollapse = document.getElementById('btnCollapseAll');
+  if (btnExpand && btnCollapse) {
+    if (expand) {
+      btnExpand.classList.add('active');
+      btnCollapse.classList.remove('active');
+    } else {
+      btnCollapse.classList.add('active');
+      btnExpand.classList.remove('active');
+    }
+  }
 }
 
 async function handleOtpUnlock(event) {
@@ -819,9 +844,8 @@ function relockPortfolio() {
 async function initAccessGate() {
   const urlParams = new URLSearchParams(window.location.search);
   const keyParam = urlParams.get('key') || urlParams.get('pin') || urlParams.get('pass') || '';
-  const authParam = urlParams.get('auth') || '';
 
-  // 1. Direct URL Key / Auth unlock
+  // 1. Direct URL Key unlock (strictly validated against authorized cryptographic PIN)
   if (keyParam) {
     const success = await attemptVaultDecryption(keyParam);
     if (success) {
@@ -830,22 +854,7 @@ async function initAccessGate() {
     }
   }
 
-  if (authParam === 'recruiter' || authParam === 'guest') {
-    grantPortfolioAccess(true);
-    return;
-  }
-
-  // 2. Direct section hash access (e.g. #about, #skills, #experience, #architecture-3d)
-  const validSectionHashes = ['#about', '#skills', '#experience', '#certifications', '#speaking', '#achievements', '#contact', '#architecture-3d', '#hero', '#stats'];
-  if (window.location.hash && validSectionHashes.includes(window.location.hash.toLowerCase())) {
-    grantPortfolioAccess(false);
-    setTimeout(() => {
-      scrollToHash(window.location.hash);
-    }, 250);
-    return;
-  }
-
-  // 3. Persistent / Session Decrypted Mount
+  // 2. Persistent / Session Decrypted Mount (only if previously authenticated in this browser)
   const cachedHtml = sessionStorage.getItem('devsecops_unlocked_html');
   const accessGranted = localStorage.getItem('devsecops_access_granted');
   if (cachedHtml || accessGranted === 'true') {
@@ -858,11 +867,11 @@ async function initAccessGate() {
     return;
   }
 
-  // 3. Otherwise, enforce locked gate
+  // 3. Strictly enforce locked gate - access requires valid PIN
   document.body.classList.add('portfolio-locked');
   const gate = document.getElementById('accessGate');
   if (gate) {
     gate.classList.remove('hidden');
-    setTimeout(renderQrAuthenticator, 100);
+    switchGateTab('unlock');
   }
 }
