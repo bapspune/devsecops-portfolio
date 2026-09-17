@@ -212,7 +212,8 @@ function initScrollAnimations() {
 
 /* ---------- Animated Stats Counters ---------- */
 function initStatsCounters() {
-  const statNumbers = document.querySelectorAll('.stat__number[data-target]');
+  // Support both .stat__number and .stat-card__number class names
+  const statNumbers = document.querySelectorAll('.stat-card__number[data-target], .stat__number[data-target]');
   if (!statNumbers.length) return;
 
   const statsObserver = new IntersectionObserver(
@@ -220,7 +221,8 @@ function initStatsCounters() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const target = parseInt(entry.target.getAttribute('data-target'), 10);
-          animateCounter(entry.target, target);
+          const suffix = entry.target.getAttribute('data-suffix') || '';
+          animateCounter(entry.target, target, suffix);
           observer.unobserve(entry.target);
         }
       });
@@ -230,7 +232,7 @@ function initStatsCounters() {
 
   statNumbers.forEach((num) => statsObserver.observe(num));
 
-  function animateCounter(element, target) {
+  function animateCounter(element, target, suffix) {
     let current = 0;
     const duration = 1800; // ms
     const increment = target / (duration / 16);
@@ -241,7 +243,7 @@ function initStatsCounters() {
         current = target;
         clearInterval(timer);
       }
-      element.textContent = Math.floor(current);
+      element.textContent = Math.floor(current) + suffix;
     }, 16);
   }
 }
@@ -537,70 +539,6 @@ function initDecryptedPortfolio() {
   }
 }
 
-let qrInstance = null;
-
-function togglePassVisibility() {
-  const input = document.getElementById('unlockInput');
-  const btn = document.getElementById('togglePassBtn');
-  if (!input) return;
-  if (input.type === 'password') {
-    input.type = 'text';
-    btn.textContent = '🙈';
-  } else {
-    input.type = 'password';
-    btn.textContent = '👁️';
-  }
-}
-
-function renderQrAuthenticator() {
-  const container = document.getElementById('qrCodeDisplay');
-  if (!container) return;
-
-  container.innerHTML = '';
-
-  const origin = window.location.origin && window.location.origin !== 'null'
-    ? window.location.origin
-    : 'https://devsecops411014.site';
-
-  // 2FA authorization token encoded safely
-  const _token = atob('NzAxMTk5Mjg0ODUwNTA4NzEh');
-  const authUrl = `${origin}/?auth=basant411014@gmail.com&key=${encodeURIComponent(_token)}`;
-
-  if (window.QRCode) {
-    qrInstance = new QRCode(container, {
-      text: authUrl,
-      width: 176,
-      height: 176,
-      colorDark: '#0284c7',
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
-  }
-}
-
-function triggerEmailApproval(event) {
-  if (event) event.preventDefault();
-
-  const origin = window.location.origin && window.location.origin !== 'null'
-    ? window.location.origin
-    : 'https://devsecops411014.site';
-
-  const _token = atob('NzAxMTk5Mjg0ODUwNTA4NzEh');
-  const approvalLink = `${origin}/?auth=basant411014@gmail.com&key=${encodeURIComponent(_token)}`;
-  const mailSubject = `[2FA Approval] Instant DevSecOps Portfolio Authorization`;
-  const mailBody = `Hello,\n\nPlease confirm access to the Executive DevSecOps & Cloud Architecture Portfolio (devsecops411014.site).\n\nDirect 1-Click Approval Link:\n${approvalLink}\n\nApprover: basant411014@gmail.com`;
-
-  const mailtoUrl = `mailto:basant411014@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
-
-  showGateAlert(
-    `✓ <strong>Launching 2FA Approval for basant411014@gmail.com...</strong><br>Opening your mail client to dispatch verification request to the administrator.`,
-    'success'
-  );
-
-  setTimeout(() => {
-    window.location.href = mailtoUrl;
-  }, 1000);
-}
 
 // Interactive Job Experience Details Toggle
 function toggleTimeline(el) {
@@ -641,41 +579,16 @@ function toggleAllTimeline(expand = true) {
   }
 }
 
-async function handleOtpUnlock(event) {
-  event.preventDefault();
-  const input = document.getElementById('otpInput');
+function togglePassVisibility() {
+  const input = document.getElementById('unlockInput');
+  const btn = document.getElementById('togglePassBtn');
   if (!input) return;
-
-  const rawVal = input.value.trim();
-  const submitBtn = document.getElementById('btnSubmitOtp');
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Verifying...';
-  }
-
-  const success = await attemptVaultDecryption(rawVal);
-
-  if (success) {
-    showGateAlert('✓ <strong>Authorization Verified!</strong> Decrypting Executive Portfolio...', 'success');
-    const lockIcon = document.getElementById('gateLockIcon');
-    if (lockIcon) lockIcon.textContent = '🔓';
-
-    setTimeout(() => {
-      grantPortfolioAccess(true);
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Verify PIN';
-      }
-    }, 400);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈';
   } else {
-    showGateAlert(
-      '✕ <strong>Invalid 2FA PIN / Key.</strong> Please check your authenticator code or scan the QR code above.',
-      'error'
-    );
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Verify PIN';
-    }
+    input.type = 'password';
+    btn.textContent = '👁️';
   }
 }
 
@@ -708,7 +621,7 @@ async function handleAccessUnlock(event) {
     }, 400);
   } else {
     showGateAlert(
-      '✕ <strong>Invalid 2FA PIN / Key.</strong> Access denied. Please enter an authorized security passkey or scan the QR code.',
+      '✕ <strong>Invalid PIN / Passkey.</strong> Access denied. Please enter the authorized security PIN.',
       'error'
     );
     if (submitBtn) {
@@ -719,58 +632,6 @@ async function handleAccessUnlock(event) {
   }
 }
 
-function handleAccessRequest(event) {
-  event.preventDefault();
-  const name = document.getElementById('reqName').value.trim();
-  const email = document.getElementById('reqEmail').value.trim();
-  const org = document.getElementById('reqOrg').value.trim();
-  const purpose = document.getElementById('reqPurpose').value.trim();
-
-  const mailSubject = `[Portfolio Access Request] ${name} from ${org}`;
-  const mailBody = `Hello Suhas,\n\nI am requesting approval to view your confidential DevSecOps & Cloud Architecture Portfolio (devsecops411014.site).\n\nRequester Details:\n• Name: ${name}\n• Corporate Email: ${email}\n• Company / Organization: ${org}\n• Purpose: ${purpose}\n\nTo grant instant access, you can approve this email or provide them with your authorization passkey.\n\nThank you!`;
-
-  const mailtoUrl = `mailto:basant411014@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
-
-  showGateAlert(
-    `✓ <strong>Access Request Prepared!</strong><br>Opening your email client to dispatch approval request to Approver (<strong>basant411014@gmail.com</strong>). Once approved, you will receive an authorization passkey or direct link.`,
-    'success'
-  );
-
-  setTimeout(() => {
-    window.location.href = mailtoUrl;
-  }, 1200);
-}
-
-function switchGateTab(tabName) {
-  const btnQr = document.getElementById('tabBtnQr');
-  const btnRequest = document.getElementById('tabBtnRequest');
-  const btnUnlock = document.getElementById('tabBtnUnlock');
-
-  const paneQr = document.getElementById('paneQr');
-  const paneRequest = document.getElementById('paneRequest');
-  const paneUnlock = document.getElementById('paneUnlock');
-  const alertBox = document.getElementById('gateAlert');
-
-  if (alertBox) alertBox.style.display = 'none';
-
-  [btnQr, btnRequest, btnUnlock].forEach(b => b && b.classList.remove('active'));
-  [paneQr, paneRequest, paneUnlock].forEach(p => p && p.classList.remove('active'));
-
-  if (tabName === 'qr') {
-    if (btnQr) btnQr.classList.add('active');
-    if (paneQr) paneQr.classList.add('active');
-    renderQrAuthenticator();
-  } else if (tabName === 'request') {
-    if (btnRequest) btnRequest.classList.add('active');
-    if (paneRequest) paneRequest.classList.add('active');
-  } else {
-    if (btnUnlock) btnUnlock.classList.add('active');
-    if (paneUnlock) paneUnlock.classList.add('active');
-    const input = document.getElementById('unlockInput');
-    if (input) setTimeout(() => input.focus(), 100);
-  }
-  initLucideIcons();
-}
 
 function showGateAlert(message, type = 'error') {
   const alertBox = document.getElementById('gateAlert');
@@ -781,10 +642,7 @@ function showGateAlert(message, type = 'error') {
   alertBox.style.display = 'block';
 }
 
-function grantPortfolioAccess(savePersistent = true) {
-  if (savePersistent) {
-    localStorage.setItem('devsecops_access_granted', 'true');
-  }
+function grantPortfolioAccess() {
 
   document.body.classList.remove('portfolio-locked');
 
@@ -818,7 +676,6 @@ function grantPortfolioAccess(savePersistent = true) {
 
 function relockPortfolio() {
   sessionStorage.removeItem('devsecops_unlocked_html');
-  localStorage.removeItem('devsecops_access_granted');
   document.body.classList.add('portfolio-locked');
 
   const mount = document.getElementById('portfolio-mount');
@@ -837,8 +694,6 @@ function relockPortfolio() {
 
   const alertBox = document.getElementById('gateAlert');
   if (alertBox) alertBox.style.display = 'none';
-
-  switchGateTab('qr');
 }
 
 async function initAccessGate() {
@@ -854,16 +709,11 @@ async function initAccessGate() {
     }
   }
 
-  // 2. Persistent / Session Decrypted Mount (only if previously authenticated in this browser)
+  // 2. Session Decrypted Mount (only if previously authenticated in this browser session)
   const cachedHtml = sessionStorage.getItem('devsecops_unlocked_html');
-  const accessGranted = localStorage.getItem('devsecops_access_granted');
-  if (cachedHtml || accessGranted === 'true') {
-    if (cachedHtml) {
-      mountDecryptedPortfolio(cachedHtml);
-    } else {
-      initDecryptedPortfolio();
-    }
-    grantPortfolioAccess(false);
+  if (cachedHtml) {
+    mountDecryptedPortfolio(cachedHtml);
+    grantPortfolioAccess();
     return;
   }
 
@@ -872,6 +722,131 @@ async function initAccessGate() {
   const gate = document.getElementById('accessGate');
   if (gate) {
     gate.classList.remove('hidden');
-    switchGateTab('unlock');
   }
 }
+
+// ===== 3D Navigation Hub Logic =====
+function initNavHub3DEffects() {
+  const cards = document.querySelectorAll('.nav-hub__card');
+  if (!cards.length) return;
+
+  cards.forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -10;
+      const rotateY = ((x - centerX) / centerX) * 10;
+      
+      card.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0)';
+    });
+  });
+}
+
+function initBackToHubButton() {
+  const btn = document.getElementById('backToHub');
+  const hubSection = document.getElementById('nav-hub');
+  
+  if (!btn || !hubSection) return;
+
+  window.addEventListener('scroll', () => {
+    const hubRect = hubSection.getBoundingClientRect();
+    // Show button when hub section is scrolled out of view (above viewport)
+    if (hubRect.bottom < 0) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  });
+}
+
+// Re-initialize logic after decryption
+const originalInitDecryptedPortfolio = window.initDecryptedPortfolio || function(){};
+window.initDecryptedPortfolio = function() {
+  originalInitDecryptedPortfolio();
+  initNavHub3DEffects();
+  initBackToHubButton();
+  initAvatarLightbox();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  initNavHub3DEffects();
+  initBackToHubButton();
+  initAvatarLightbox();
+});
+
+/* ============================================================
+   AVATAR LIGHTBOX
+   ============================================================ */
+
+function initAvatarLightbox() {
+  // Wire "About" nav link: scroll + open lightbox
+  const navAboutLink = document.getElementById('navAboutLink');
+  if (navAboutLink) {
+    navAboutLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      // Close mobile menu if open
+      const linksContainer = document.getElementById('navLinks');
+      const toggle = document.getElementById('navToggle');
+      if (linksContainer && linksContainer.classList.contains('active')) {
+        linksContainer.classList.remove('active');
+        if (toggle) toggle.classList.remove('active');
+      }
+      // Scroll to About section, then open lightbox
+      scrollToHash('#about');
+      setTimeout(() => openAvatarLightbox(), 500);
+    });
+  }
+
+  // Also wire the "About Me" nav-hub card to open lightbox
+  const hubAboutCard = document.querySelector('.nav-hub__card[href="#about"]');
+  if (hubAboutCard) {
+    hubAboutCard.addEventListener('click', function (e) {
+      e.preventDefault();
+      scrollToHash('#about');
+      setTimeout(() => openAvatarLightbox(), 500);
+    });
+  }
+
+  // Keyboard ESC close
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAvatarLightbox();
+  });
+}
+
+function openAvatarLightbox() {
+  const lightbox = document.getElementById('avatarLightbox');
+  if (!lightbox) return;
+  // Reset animation by removing then re-adding the class
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Re-trigger animation
+  const inner = lightbox.querySelector('.avatar-lightbox__inner');
+  if (inner) {
+    inner.style.animation = 'none';
+    inner.offsetHeight; // reflow
+    inner.style.animation = '';
+  }
+}
+
+function closeAvatarLightbox() {
+  const lightbox = document.getElementById('avatarLightbox');
+  if (!lightbox) return;
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Make functions globally accessible
+window.openAvatarLightbox = openAvatarLightbox;
+window.closeAvatarLightbox = closeAvatarLightbox;
+

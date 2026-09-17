@@ -77,7 +77,7 @@
   <div class="ambient-orb ambient-orb--cyan"></div>
   <canvas id="particles-canvas"></canvas>
 
-  <!-- ===== Enterprise Access Gate / Confidentiality Portal ===== -->
+  <!-- ===== Enterprise Access Gate — PIN Only ===== -->
   <div class="access-gate" id="accessGate">
     <div class="gate-card">
       <div class="gate-header">
@@ -86,99 +86,33 @@
         </div>
         <div class="gate-badge">
           <span class="pulse"></span>
-          <span>Confidentiality Protected · TLS 1.3 / SSL</span>
+          <span>Confidentiality Protected · TLS 1.3 / AES-256-GCM</span>
         </div>
-        <h2 class="gate-title">Executive Portfolio Access</h2>
+        <h2 class="gate-title">Restricted Portfolio Access</h2>
         <p class="gate-subtitle">
-          Confidential Enterprise Cloud & DevSecOps Architecture Portfolio.
-          Access is strictly protected and restricted to authorized personnel with a security passkey.
+          This portfolio contains confidential enterprise architecture materials.<br>
+          Enter your authorized security PIN to proceed.
         </p>
-      </div>
-
-      <div class="gate-tabs">
-        <button class="gate-tab active" id="tabBtnUnlock" onclick="switchGateTab('unlock')">🔑 Security PIN / Key</button>
-        <button class="gate-tab" id="tabBtnQr" onclick="switchGateTab('qr')">📱 QR Authenticator</button>
-        <button class="gate-tab" id="tabBtnRequest" onclick="switchGateTab('request')">✉️ Request Access</button>
       </div>
 
       <div id="gateAlert" class="gate-alert"></div>
 
-      <!-- Tab 1: QR Code 2FA Authenticator -->
-      <div class="gate-tab-pane" id="paneQr">
-        <div class="qr-container">
-          <div class="qr-scanner-line"></div>
-          <div id="qrCodeDisplay" class="qr-box"></div>
+      <form id="accessUnlockForm" onsubmit="handleAccessUnlock(event)">
+        <div class="gate-form-group">
+          <label for="unlockInput">Security PIN / Passkey</label>
+          <div style="position: relative;">
+            <input type="password" id="unlockInput" class="gate-input" placeholder="Enter authorized PIN..." required autocomplete="off" style="padding-right: 2.8rem;">
+            <button type="button" onclick="togglePassVisibility()" id="togglePassBtn" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 0.2rem;" title="Show/Hide passkey">👁️</button>
+          </div>
         </div>
-        <div class="qr-instructions">
-          <p>Scan with mobile camera to authenticate or trigger instant approval for <strong>basant411014@gmail.com</strong>.</p>
-          <div class="qr-email-tag">Authorized Approver: <span>basant411014@gmail.com</span></div>
-        </div>
+        <button type="submit" class="gate-btn" id="btnSubmitUnlock">
+          <i data-lucide="key"></i>
+          <span>Verify & Unlock Portfolio</span>
+        </button>
+      </form>
 
-        <div class="qr-action-row">
-          <a id="qrDirectAuthBtn" href="#" class="qr-open-btn" onclick="triggerEmailApproval(event)">
-            <i data-lucide="shield-check"></i>
-            <span>Approve via basant411014@gmail.com (Mail / App)</span>
-          </a>
-        </div>
-
-        <div class="qr-otp-section">
-          <label for="otpInput">Or Enter Authenticator PIN / 2FA Security Key</label>
-          <form id="accessOtpForm" onsubmit="handleOtpUnlock(event)">
-            <div class="qr-otp-row">
-              <input type="text" id="otpInput" class="gate-input" placeholder="Enter 2FA PIN / Key..." maxlength="64" autocomplete="off" required>
-              <button type="submit" class="gate-btn qr-otp-btn" id="btnSubmitOtp">Verify PIN</button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- Tab 2: Request Access via Email -->
-      <div class="gate-tab-pane" id="paneRequest">
-        <form id="accessRequestForm" onsubmit="handleAccessRequest(event)">
-          <div class="gate-form-group">
-            <label for="reqName">Your Full Name</label>
-            <input type="text" id="reqName" class="gate-input" placeholder="e.g. Alex Morgan" required>
-          </div>
-          <div class="gate-form-group">
-            <label for="reqEmail">Your Corporate / Work Email</label>
-            <input type="email" id="reqEmail" class="gate-input" placeholder="e.g. alex@company.com" required>
-          </div>
-          <div class="gate-form-group">
-            <label for="reqOrg">Organization / Agency</label>
-            <input type="text" id="reqOrg" class="gate-input" placeholder="e.g. AWS, T-Mobile, Tech Recruiter" required>
-          </div>
-          <div class="gate-form-group">
-            <label for="reqPurpose">Purpose of Access</label>
-            <input type="text" id="reqPurpose" class="gate-input" placeholder="e.g. Senior DevSecOps Role / Architecture Advisory" required>
-          </div>
-          <button type="submit" class="gate-btn" id="btnSubmitRequest">
-            <i data-lucide="mail"></i>
-            <span>Submit Access Request for Email Approval</span>
-          </button>
-        </form>
-        <div class="gate-help">
-          Access requests are routed directly to <strong>basant411014@gmail.com</strong> for approval.
-        </div>
-      </div>
-
-      <!-- Tab 3: Enter Approved Email / Key -->
-      <div class="gate-tab-pane active" id="paneUnlock">
-        <form id="accessUnlockForm" onsubmit="handleAccessUnlock(event)">
-          <div class="gate-form-group">
-            <label for="unlockInput">Approved Email ID or Security Passkey</label>
-            <div style="position: relative;">
-              <input type="password" id="unlockInput" class="gate-input" placeholder="Enter security passkey or approved email..." required autocomplete="off" style="padding-right: 2.8rem;">
-              <button type="button" onclick="togglePassVisibility()" id="togglePassBtn" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 0.2rem;" title="Show/Hide passkey">👁️</button>
-            </div>
-          </div>
-          <button type="submit" class="gate-btn" id="btnSubmitUnlock">
-            <i data-lucide="key"></i>
-            <span>Verify & Unlock Portfolio</span>
-          </button>
-        </form>
-        <div class="gate-help">
-          Confidential enterprise materials. Access restricted to authorized email IDs or provided security passkeys.
-        </div>
+      <div class="gate-help">
+        Access restricted to authorized personnel only. Contact the portfolio owner for credentials.
       </div>
     </div>
   </div>
@@ -199,7 +133,8 @@
         <button class="nav__relock-btn" onclick="relockPortfolio()" title="Lock portfolio again">Lock</button>
       </div>
       <ul class="nav__links" id="navLinks">
-        <li><a href="#about">About</a></li>
+        <li><a href="#nav-hub">Hub</a></li>
+        <li><a href="#about" id="navAboutLink">About</a></li>
         <li><a href="#architecture-3d">3D Architecture</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#experience">Experience</a></li>
@@ -306,12 +241,112 @@
           <div class="stat-card__label">Terraform Modules Authored</div>
         </div>
         <div class="stat-card reveal">
-          <div class="stat-card__number" data-target="10">0</div>
+          <div class="stat-card__number" data-target="12" data-suffix="">0</div>
           <div class="stat-card__label">Industry Certifications</div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- ===== 3D Navigation Hub ===== -->
+  <section class="nav-hub section-padding" id="nav-hub">
+    <div class="container">
+      <span class="section-label reveal">Explore Portfolio</span>
+      <h2 class="section-title reveal">Navigate My <span class="gradient-text">Portfolio</span></h2>
+      <p class="section-subtitle reveal">
+        Click any card to explore that section in detail. Hover for 3D perspective effects.
+      </p>
+
+      <div class="nav-hub__grid">
+        <a href="#about" class="nav-hub__card reveal" data-nav-card>
+          <div class="nav-hub__card-inner">
+            <div class="nav-hub__card-icon">👤</div>
+            <h3 class="nav-hub__card-title">About Me</h3>
+            <p class="nav-hub__card-desc">17+ years engineering resilient cloud & AI infrastructure at scale</p>
+            <span class="nav-hub__card-arrow">→</span>
+          </div>
+        </a>
+
+        <a href="#architecture-3d" class="nav-hub__card reveal" data-nav-card>
+          <div class="nav-hub__card-inner">
+            <div class="nav-hub__card-icon">🏗️</div>
+            <h3 class="nav-hub__card-title">3D Architecture</h3>
+            <p class="nav-hub__card-desc">Interactive WebGL enterprise cloud architectures you can rotate & inspect</p>
+            <span class="nav-hub__card-arrow">→</span>
+          </div>
+        </a>
+
+        <a href="#skills" class="nav-hub__card reveal" data-nav-card>
+          <div class="nav-hub__card-inner">
+            <div class="nav-hub__card-icon">⚡</div>
+            <h3 class="nav-hub__card-title">Skills & Stack</h3>
+            <p class="nav-hub__card-desc">AWS, Kubernetes, Terraform, AI/ML, CI/CD, Security & Compliance</p>
+            <span class="nav-hub__card-arrow">→</span>
+          </div>
+        </a>
+
+        <a href="#experience" class="nav-hub__card reveal" data-nav-card>
+          <div class="nav-hub__card-inner">
+            <div class="nav-hub__card-icon">💼</div>
+            <h3 class="nav-hub__card-title">Experience</h3>
+            <p class="nav-hub__card-desc">IBM, T-Mobile, Mastercard, Barclays — Fortune 500 enterprise delivery</p>
+            <span class="nav-hub__card-arrow">→</span>
+          </div>
+        </a>
+
+        <a href="#certifications" class="nav-hub__card reveal" data-nav-card>
+          <div class="nav-hub__card-inner">
+            <div class="nav-hub__card-icon">🏆</div>
+            <h3 class="nav-hub__card-title">Certifications</h3>
+            <p class="nav-hub__card-desc">12 industry credentials — AWS, CKAD, Terraform, Azure & more</p>
+            <span class="nav-hub__card-arrow">→</span>
+          </div>
+        </a>
+
+        <a href="#speaking" class="nav-hub__card reveal" data-nav-card>
+          <div class="nav-hub__card-inner">
+            <div class="nav-hub__card-icon">🎤</div>
+            <h3 class="nav-hub__card-title">Speaking & Honors</h3>
+            <p class="nav-hub__card-desc">AWS Summit 2026, IBM Think 2025, open-source contributions & awards</p>
+            <span class="nav-hub__card-arrow">→</span>
+          </div>
+        </a>
+
+        <a href="#achievements" class="nav-hub__card reveal" data-nav-card>
+          <div class="nav-hub__card-inner">
+            <div class="nav-hub__card-icon">📊</div>
+            <h3 class="nav-hub__card-title">Achievements</h3>
+            <p class="nav-hub__card-desc">Tangible business impact metrics and technical milestones delivered</p>
+            <span class="nav-hub__card-arrow">→</span>
+          </div>
+        </a>
+
+        <a href="#education" class="nav-hub__card reveal" data-nav-card>
+          <div class="nav-hub__card-inner">
+            <div class="nav-hub__card-icon">🎓</div>
+            <h3 class="nav-hub__card-title">Education</h3>
+            <p class="nav-hub__card-desc">B.E. Computer Engineering — Savitribai Phule Pune University</p>
+            <span class="nav-hub__card-arrow">→</span>
+          </div>
+        </a>
+
+        <a href="#contact" class="nav-hub__card reveal" data-nav-card>
+          <div class="nav-hub__card-inner">
+            <div class="nav-hub__card-icon">📧</div>
+            <h3 class="nav-hub__card-title">Contact</h3>
+            <p class="nav-hub__card-desc">SMS, WhatsApp, Email — direct multi-channel communication</p>
+            <span class="nav-hub__card-arrow">→</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Floating Back to Hub Button -->
+  <button class="back-to-hub" id="backToHub" onclick="scrollToHash('#nav-hub')" title="Back to Navigation Hub">
+    <i data-lucide="layout-grid"></i>
+    <span>Hub</span>
+  </button>
 
   <!-- ===== 3D Architecture Visualizer Section ===== -->
   <section class="arch3d section-padding" id="architecture-3d">
@@ -413,8 +448,9 @@
     <div class="container">
       <div class="about__grid">
         <div class="about__image-wrapper reveal">
-          <div class="about__image">
+          <div class="about__image about__image--clickable" id="aboutAvatarWrapper" title="Click to view full size photo" onclick="openAvatarLightbox()">
             <img src="avatar.png" alt="Suhas Phunde - Senior DevSecOps Engineer & Cloud Architect" id="profileImg">
+            <div class="about__image-zoom-hint">🔍 Click to enlarge</div>
           </div>
           <div class="about__image-decor"></div>
         </div>
@@ -868,65 +904,66 @@
 
       <div class="certs__grid">
         <div class="cert-card reveal">
-          <div class="cert-card__badge">🏆</div>
-          <div class="cert-card__name">AWS Solutions Architect – Associate</div>
-          <div class="cert-card__year">2024</div>
+          <div class="cert-card__badge">🛠️</div>
+          <div class="cert-card__name">AWS Certified DevOps Engineer – Professional</div>
+          <div class="cert-card__org">Amazon Web Services</div>
+          <div class="cert-card__year">2020</div>
         </div>
         <div class="cert-card reveal">
-          <div class="cert-card__badge">🏗️</div>
-          <div class="cert-card__name">HashiCorp Terraform Associate</div>
-          <div class="cert-card__year">2024</div>
+          <div class="cert-card__badge">🏆</div>
+          <div class="cert-card__name">AWS Certified Solutions Architect – Associate</div>
+          <div class="cert-card__org">Amazon Web Services</div>
+          <div class="cert-card__year">2018</div>
+        </div>
+        <div class="cert-card reveal">
+          <div class="cert-card__badge">🖥️</div>
+          <div class="cert-card__name">AWS Certified SysOps Administrator – Associate</div>
+          <div class="cert-card__org">Amazon Web Services</div>
+          <div class="cert-card__year">2020</div>
         </div>
         <div class="cert-card reveal">
           <div class="cert-card__badge">⎈</div>
           <div class="cert-card__name">CKAD – Certified Kubernetes Application Developer</div>
+          <div class="cert-card__org">Cloud Native Computing Foundation</div>
           <div class="cert-card__year">2021</div>
         </div>
         <div class="cert-card reveal">
-          <div class="cert-card__badge">☁️</div>
-          <div class="cert-card__name">AWS Certified Cloud Practitioner</div>
+          <div class="cert-card__badge">🏗️</div>
+          <div class="cert-card__name">HashiCorp Certified: Terraform Associate (002)</div>
+          <div class="cert-card__org">HashiCorp</div>
           <div class="cert-card__year">2021</div>
         </div>
         <div class="cert-card reveal">
           <div class="cert-card__badge">🔷</div>
-          <div class="cert-card__name">Microsoft Azure Fundamentals AZ-900</div>
-          <div class="cert-card__year">2020</div>
-        </div>
-        <div class="cert-card reveal">
-          <div class="cert-card__badge">🐳</div>
-          <div class="cert-card__name">IBM Cloud Pak Containers</div>
-          <div class="cert-card__year">2020</div>
-        </div>
-        <div class="cert-card reveal">
-          <div class="cert-card__badge">🔧</div>
-          <div class="cert-card__name">IBM Garage Foundation</div>
-          <div class="cert-card__year">2020</div>
-        </div>
-        <div class="cert-card reveal">
-          <div class="cert-card__badge">🎯</div>
-          <div class="cert-card__name">IBM Cloud Essentials V3</div>
-          <div class="cert-card__year">2019</div>
-        </div>
-        <div class="cert-card reveal">
-          <div class="cert-card__badge">🛠️</div>
-          <div class="cert-card__name">AWS Certified DevOps Engineer – Professional</div>
-          <div class="cert-card__year">2023</div>
+          <div class="cert-card__name">Microsoft Certified: Azure Fundamentals AZ-900</div>
+          <div class="cert-card__org">Microsoft</div>
+          <div class="cert-card__year">2021</div>
         </div>
         <div class="cert-card reveal">
           <div class="cert-card__badge">🛡️</div>
-          <div class="cert-card__name">IBM Certified DevOps Engineer</div>
-          <div class="cert-card__year">2023</div>
+          <div class="cert-card__name">IBM Certified Solution Advisor – DevOps V1</div>
+          <div class="cert-card__org">IBM</div>
+          <div class="cert-card__year">2018</div>
+        </div>
+        <div class="cert-card reveal">
+          <div class="cert-card__badge">🚀</div>
+          <div class="cert-card__name">IBM Certified Deployment Professional – UrbanCode Deploy</div>
+          <div class="cert-card__org">IBM</div>
+          <div class="cert-card__year">2018</div>
         </div>
         <div class="cert-card reveal">
           <div class="cert-card__badge">💡</div>
           <div class="cert-card__name">Enterprise Design Thinking Practitioner</div>
+          <div class="cert-card__org">IBM</div>
           <div class="cert-card__year">2018</div>
         </div>
         <div class="cert-card reveal">
           <div class="cert-card__badge">🐍</div>
           <div class="cert-card__name">Python for Data Science</div>
+          <div class="cert-card__org">IBM / Cognitive Class</div>
           <div class="cert-card__year">2018</div>
         </div>
+      </div>
       </div>
     </div>
   </section>
@@ -1184,7 +1221,26 @@
   </div><!-- end portfolio-main -->
   </div>
 
-  <script src="qrcode.min.js"></script>
+  <!-- ===== Avatar Lightbox Modal ===== -->
+  <div id="avatarLightbox" class="avatar-lightbox" onclick="closeAvatarLightbox()" role="dialog" aria-modal="true" aria-label="Full-size profile photo">
+    <div class="avatar-lightbox__inner" onclick="event.stopPropagation()">
+      <button class="avatar-lightbox__close" onclick="closeAvatarLightbox()" aria-label="Close">&times;</button>
+      <img src="avatar.png" alt="Suhas Phunde — Senior DevSecOps Engineer & Cloud Architect" class="avatar-lightbox__img" id="lightboxImg">
+      <div class="avatar-lightbox__caption">
+        <h3>Suhas Phunde</h3>
+        <p>Senior DevSecOps Engineer &amp; Cloud Architect | 17+ Years | IBM · T-Mobile · Mastercard</p>
+        <div class="avatar-lightbox__badges">
+          <span class="lightbox-badge">☁️ AWS Expert</span>
+          <span class="lightbox-badge">⎈ CKAD Certified</span>
+          <span class="lightbox-badge">🛠️ Terraform Associate</span>
+          <span class="lightbox-badge">🤖 Agentic AI Builder</span>
+          <span class="lightbox-badge">🔒 Zero-Trust Architect</span>
+          <span class="lightbox-badge">🎤 AWS Summit 2026 Speaker</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="portfolio-vault.js"></script>
   <script src="architecture-3d.js"></script>
   <script src="script.js"></script>
