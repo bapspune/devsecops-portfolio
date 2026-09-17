@@ -525,7 +525,7 @@ function mountDecryptedPortfolio(html) {
     mount.innerHTML = html;
   }
   sessionStorage.setItem('devsecops_unlocked_html', html);
-  document.title = 'Suhas Phunde — Senior DevSecOps Engineer & Cloud Architect | devsecops411014.site';
+  document.title = 'Suhas Phunde — Senior DevSecOps Engineer & Cloud Architect';
   initDecryptedPortfolio();
 }
 
